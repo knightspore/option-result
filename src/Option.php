@@ -13,10 +13,10 @@ use Ciarancoza\OptionResult\Exceptions\UnwrapNoneException;
 class Option {
 
     /**
-      * Creates a `some` Option
-      * @template T 
-      * @param T $value
-      * @return Option<T>
+        * Creates a `some` Option
+        * @template T 
+        * @param T $value
+        * @return Option<T>
     */
 
     public static function Some(mixed $value): static {
@@ -24,8 +24,8 @@ class Option {
     }
 
     /**
-      * Creates a `none` Option 
-      * @return Option<never> 
+        * Creates a `none` Option 
+        * @return Option<never> 
     */
 
     public static function None(): static {
@@ -71,6 +71,18 @@ class Option {
     public function unwrapOr(mixed $or): mixed {
         if ($this->isSome()) return $this->unwrap();
         return $or;
+    }
+
+    /**
+        * Calls `fn` on contained value if `some`, returns `none` if `none`
+        * @template U
+        * @param callable(T): U $fn Function to transform the value
+        * @return Option<U>
+    */
+
+    public function map(callable $fn): Option {
+        if ($this->isNone()) return Option::None();
+        return Option::Some($fn($this->value));
     }
 
 }

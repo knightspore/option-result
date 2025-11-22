@@ -2,6 +2,9 @@
 
 namespace Ciarancoza\OptionResult;
 
+use Ciarancoza\OptionResult\Exceptions\UnwrapErrException;
+use Ciarancoza\OptionResult\Exceptions\UnwrapOkException;
+
 /**
   * Result<T, E> represents a success (`ok`) or an error (`err`)
   * @template T
@@ -61,12 +64,70 @@ class Result {
 
     /**
       * Returns `Some(E)` if `err`, or `None` if `ok`
-      * @returns Option<E>
+      * @return Option<E>
     */
 
     public function getErr(): Option {
         if ($this->isOk()) return Option::None();
         return Option::Some($this->value);
+    }
+
+    /**
+        * Returns the contained value if `ok`, otherwise throws UnwrapErrException
+        * @throws UnwrapErrException
+        * @return T The contained value
+    */
+
+    public function unwrap(): mixed {
+        if ($this->isErr()) throw new UnwrapErrException;
+        return $this->value;
+    }
+
+    /**
+        * Returns the contained value if `err`, otherwise throws UnwrapOkException
+        * @throws UnwrapOkException
+        * @return E The contained error value
+    */
+
+    public function unwrapErr(): mixed {
+        if ($this->isOk()) throw new UnwrapOkException;
+        return $this->value;
+    }
+
+    /**
+        * Returns the contained `ok` value or a provided default.
+        * @param V $or
+        * @return T|V
+    */
+
+    public function unwrapOr(mixed $or): mixed {
+        if ($this->isOk()) return $this->unwrap();
+        return $or;
+    }
+
+    /**
+        * If `ok`, transform the value with `$fn`
+        * @template U
+        * @param callable(T): U $fn Function to transform the value
+        * @return Result<U,E>
+    */
+
+    public function map(callable $fn): Result {
+        if ($this->isErr()) return Result::Err($this->value);
+        return Result::Ok($fn($this->value));
+    }
+
+
+    /**
+        * If `err`, transform the error value with `$fn`
+        * @template U
+        * @param callable(E): U $fn Function to transform the value
+        * @return Result<T,U>
+    */
+
+    public function mapErr(callable $fn): Result {
+        if ($this->isOk()) return Result::Ok($this->value);
+        return Result::Err($fn($this->value));
     }
 
 }
