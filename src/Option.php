@@ -7,82 +7,97 @@ use Ciarancoza\OptionResult\Exceptions\UnwrapNoneException;
 /**
  * Option<T> represents an optional value.
  * An option may be `some` or `none`, where `some` contains a value and `none` does not.
+ *
  * @template T
-*/
-
-class Option {
-
+ */
+class Option
+{
     /**
-        * Creates a `some` Option
-        * @template T 
-        * @param T $value
-        * @return Option<T>
-    */
-
-    public static function Some(mixed $value = true): static {
+     * Creates a `some` Option
+     *
+     * @template T
+     *
+     * @param  T  $value
+     * @return Option<T>
+     */
+    public static function Some(mixed $value = true): static
+    {
         return new static($value, true);
     }
 
     /**
-        * Creates a `none` Option 
-        * @return Option<never> 
-    */
-
-    public static function None(): static {
+     * Creates a `none` Option
+     *
+     * @return Option<never>
+     */
+    public static function None(): static
+    {
         return new static(null, false);
     }
 
     /** @param T $value */
-
     private function __construct(
-        private mixed $value, 
+        private mixed $value,
         private bool $isSome
     ) {}
 
     /** Returns `true` if the option is a `some` option. */
-
-    public function isSome(): bool {
+    public function isSome(): bool
+    {
         return $this->isSome;
     }
 
     /** Returns `true` if the option is a `none` option. */
-
-    public function isNone(): bool {
-        return !$this->isSome();
+    public function isNone(): bool
+    {
+        return ! $this->isSome();
     }
 
     /**
-        * Returns the contained value if `some`, otherwise throws UnwrapNoneException.
-        * @throws UnwrapNoneException When called on `None`
-        * @return T The contained value
-    */
+     * Returns the contained value if `some`, otherwise throws UnwrapNoneException.
+     *
+     * @return T The contained value
+     *
+     * @throws UnwrapNoneException When called on `None`
+     */
+    public function unwrap(): mixed
+    {
+        if ($this->isNone()) {
+            throw new UnwrapNoneException;
+        }
 
-    public function unwrap(): mixed {
-        if ($this->isNone()) throw new UnwrapNoneException;
         return $this->value;
     }
 
     /**
-        * Returns the contained `some` value or a provided default.
-        * @param V $or
-        * @return T|V
-    */
+     * Returns the contained `some` value or a provided default.
+     *
+     * @param  V  $or
+     * @return T|V
+     */
+    public function unwrapOr(mixed $or): mixed
+    {
+        if ($this->isSome()) {
+            return $this->unwrap();
+        }
 
-    public function unwrapOr(mixed $or): mixed {
-        if ($this->isSome()) return $this->unwrap();
         return $or;
     }
 
     /**
-        * Calls `fn` on contained value if `some`, returns `none` if `none`
-        * @template U
-        * @param callable(T): U $fn Function to transform the value
-        * @return Option<U>
-    */
+     * Calls `fn` on contained value if `some`, returns `none` if `none`
+     *
+     * @template U
+     *
+     * @param  callable(T): U  $fn  Function to transform the value
+     * @return Option<U>
+     */
+    public function map(callable $fn): Option
+    {
+        if ($this->isNone()) {
+            return Option::None();
+        }
 
-    public function map(callable $fn): Option {
-        if ($this->isNone()) return Option::None();
         return Option::Some($fn($this->value));
     }
-
 }
