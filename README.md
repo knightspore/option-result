@@ -72,10 +72,12 @@ $userData = processUser(123);
 - Add useful methods
     - Option
         - [x] `map()`
+        - [ ] `unwrapOrElse()`
         - [ ] `expect(string $message)`
         - [ ] `andThen(callback $fn)`
     - Result
         - [x] `unwrap()`
+        - [ ] `unwrapOrElse()`
         - [x] `unwrapErr()`
         - [x] `unwrapOr(mixed $default)`
         - [x] `map()`
