@@ -12,7 +12,7 @@ composer require --dev ciarancoza/option-result
 
 This library contains two classes: `Option<T>` and `Result<T,E>`.
 
-Which is [appropriate for your use case]? 
+Which is appropriate for your use case? 
 - You have one failure mode: `Option`
 - Two have two or more failure modes: `Result`
 
@@ -71,21 +71,38 @@ $userData = processUser(123);
 
 - Add useful methods
     - Option
-        - [x] `map()`
-        - [ ] `unwrapOrElse()`
-        - [ ] `expect(string $message)`
-        - [ ] `andThen(callback $fn)`
-    - Result
+        - [x] `Some()`
+        - [x] `None()`
+        - [x] `isSome()`
+        - [x] `isNone()`
         - [x] `unwrap()`
-        - [ ] `unwrapOrElse()`
+        - [x] `unwrapOr()`
+        - [x] `map()`
+        - [ ] `mapOr()` - Returns contained value or computes from closure
+        - [ ] `mapOrElse(callback $default, callback $fn)` - Map with lazy default function
+        - [ ] `filter(callback $predicate)` - Keep Some only if predicate returns true
+        - [ ] `unwrapOrElse()` - Returns contained value or computes from closure
+        - [ ] `expect(string $message)` - Returns contained value or panics with custom error message
+        - [ ] `andThen(callback $fn)` - Returns result of `fn(contained value)` if some, or returns none
+    - Result
+        - [x] `Ok()`
+        - [x] `Err()`
+        - [x] `isOk()`
+        - [x] `isErr()`
+        - [x] `getOk()`
+        - [x] `getErr()`
+        - [x] `unwrap()`
         - [x] `unwrapErr()`
         - [x] `unwrapOr(mixed $default)`
         - [x] `map()`
         - [x] `mapErr()`
+        - [ ] `mapOr()` - Returns contained value or computes from closure
+        - [ ] `mapOrElse(callback $default, callback $fn)` - Map with lazy default function
+        - [ ] `unwrapOrElse()`
         - [ ] `expect(string $message)`
         - [ ] `expectErr(string $message)`
         - [ ] `andThen(callback $fn)`
-        - [ ] `safe(throwable $fn, callback $onMapErr)` could be cool
+        - [ ] `tryCatch(callback $tryFn, callback $onMapErr)` - Returns Ok if operation is successful or calls onMapErr with the Err if it throws
 
 ## Contributing
 
