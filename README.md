@@ -1,6 +1,10 @@
-# OptionResult
+# option-result - Rust-style `Option` and `Result` Classes for PHP
 
-Rust-style Option and Result Classes for PHP
+This library contains two classes: `Option` and `Result`.
+
+`Option<T>` represents an optional value. An option may be `some` or `none`, where `some(T)` contains a value and `none` does not.
+
+`Result<T,E>` represents a success (`ok(T)`) or an error (`err(E)`).
 
 ## Installation
 
@@ -10,12 +14,6 @@ composer require --dev ciarancoza/option-result
 
 ## Usage
 
-This library contains two classes: `Option<T>` and `Result<T,E>`.
-
-Which is appropriate for your use case? 
-- You have one failure mode: `Option`
-- Two have two or more failure modes: `Result`
-
 ### Option
 
 ```php
@@ -24,48 +22,37 @@ function findUser(int $id): Option {
     return $user ? Option::Some($user) : Option::None();
 }
 
-function getUserName(int $userId): string {
+function getUserTheme(int $userId): string {
     return findUser($userId)
-        ->map(fn($user) => $user->name)
-        ->map(fn($name) => ucfirst($name))
-        ->unwrapOr('Unknown User');
+        ->map(fn ($user) => $user->theme)
+        ->map(fn ($theme) => strtolower($theme))
+        ->unwrapOr('auto');
 }
-
-echo getUserName(123); // "John Doe" or "Unknown User"
 ```
 
-### Result
+### Result 
 
-```php
-function fetchUserData(int $id): Result {
+```php 
+function fetchOrgData(int $id): Result {
     try {
-        $response = Http::get("/api/users/{$id}");
-        
-        if ($response->failed()) {
-            return Result::Err("API request failed: " . $response->status());
-        }
-        
+        $response = Http::get("/api/orgs/{$id}");
+        if ($response->failed()) return Result::Err("API request failed: " . $response->status());
         return Result::Ok($response->json());
     } catch (Exception $e) {
         return Result::Err("Connection error: " . $e->getMessage());
     }
 }
 
-function processUser(int $userId): array {
-    return fetchUserData($userId)
-        ->map(fn($data) => $data['user'])
-        ->map(fn($user) => [
-            'id' => $user['id'],
-            'name' => ucfirst($user['name']),
-            'email' => strtolower($user['email'])
-        ])
-        ->mapErr(fn($error) => "Failed to process user: " . $error)
-        ->unwrapOr(['error' => 'User not found']);
+function getActiveEmails(int $orgId): array {
+    return fetchOrgData($orgId)
+        ->map(fn ($org) => $org->getEmails())
+        ->map(fn ($emails) => $emails['active'])
+        ->mapErr(fn ($error) => "Failed to get active emails: " . $error")
+        ->unwrapOr([]);
 }
-
-$userData = processUser(123);
-// Either processed user data or error information
 ```
+
+You can view [the generated documentation](https://github.com/knightspore/option-result/tree/main/docs) for more usage details.
 
 ## Road Map
 

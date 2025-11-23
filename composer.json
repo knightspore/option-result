@@ -16,10 +16,13 @@
     ],
     "require-dev": {
         "phpunit/phpunit": "^12.4",
-        "laravel/pint": "^1.25"
+        "laravel/pint": "^1.25",
+        "phpdocumentor/phpdocumentor": "v3.9.0",
+        "saggre/phpdocumentor-markdown": "^1.0"
     },
     "scripts": {
         "test": "./vendor/bin/phpunit --testdox tests",
-        "lint": "./vendor/bin/pint"
+        "lint": "./vendor/bin/pint",
+        "docs": "./vendor/bin/phpdoc run -d $(pwd)/src -t $(pwd)/docs --template='vendor/saggre/phpdocumentor-markdown/themes/markdown'"
     }
 }
