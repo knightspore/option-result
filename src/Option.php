@@ -81,22 +81,7 @@ class Option
             return $this->unwrap();
         }
 
-        return $or;
-    }
-
-    /**
-     * Returns the contained `some` value or computes from closure
-     *
-     * @param  callable(): V  $fn
-     * @return T|V
-     */
-    public function unwrapOrElse(callable $fn): mixed
-    {
-        if ($this->isSome()) {
-            return $this->unwrap();
-        }
-
-        return $fn();
+        return is_callable($or) ? $or() : $or;
     }
 
     /**

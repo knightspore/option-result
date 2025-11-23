@@ -54,6 +54,9 @@ class ResultTest extends TestCase
         $default = 2;
         $this->assertSame(9, Result::Ok(9)->unwrapOr($default));
         $this->assertSame($default, Result::Err('error')->unwrapOr($default));
+
+        $this->assertSame(9, Result::Ok(9)->unwrapOr(fn () => $default));
+        $this->assertSame($default, Result::Err('error')->unwrapOr(fn () => $default));
     }
 
     public function test_unwrap_or_else(): void

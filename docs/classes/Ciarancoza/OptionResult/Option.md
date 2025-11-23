@@ -125,22 +125,6 @@ public unwrapOr(\Ciarancoza\OptionResult\V $or): \Ciarancoza\OptionResult\T|\Cia
 
 ***
 
-### unwrapOrElse
-
-Returns the contained `some` value or computes from closure
-
-```php
-public unwrapOrElse(callable $fn): \Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\V
-```
-
-**Parameters:**
-
-| Parameter | Type         | Description |
-|-----------|--------------|-------------|
-| `$fn`     | **callable** |             |
-
-***
-
 ### map
 
 Calls `fn` on contained value if `some`, returns `none` if `none`

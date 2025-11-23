@@ -41,11 +41,11 @@ class OptionTest extends TestCase
         $this->assertSame('bike', Option::None()->unwrapOr('bike'));
     }
 
-    public function test_unwrap_or_else(): void
+    public function test_unwrap_or_callable(): void
     {
         $k = 21;
-        $this->assertSame(4, Option::Some(4)->unwrapOrElse(fn () => 2 * $k));
-        $this->assertSame(42, Option::None()->unwrapOrElse(fn () => 2 * $k));
+        $this->assertSame(4, Option::Some(4)->unwrapOr(fn () => 2 * $k));
+        $this->assertSame(42, Option::None()->unwrapOr(fn () => 2 * $k));
     }
 
     public function test_map(): void

@@ -66,12 +66,11 @@ You can view [the generated documentation](https://github.com/knightspore/option
         - [x] `isNone()`
         - [x] `unwrap()`
         - [x] `unwrapOr()`
-        - [x] `unwrapOrElse()` - Returns contained value or computes from closure
         - [x] `map()`
-        - [ ] `mapOr()` - Returns contained value or computes from closure
-        - [ ] `mapOrElse(callback $default, callback $fn)` - Map with lazy default function
-        - [ ] `filter(callback $predicate)` - Keep Some only if predicate returns true
-        - [ ] `expect(string $message)` - Returns contained value or panics with custom error message
+        - [ ] `mapOr()`
+        - [ ] `filter(callback $predicate)`
+        - [ ] `expect(string $message)`
+        - [ ] `and(mixed $value)`
         - [ ] `andThen(callback $fn)` - Returns result of `fn(contained value)` if some, or returns none
     - Result
         - [x] `Ok()`
@@ -83,11 +82,9 @@ You can view [the generated documentation](https://github.com/knightspore/option
         - [x] `unwrap()`
         - [x] `unwrapErr()`
         - [x] `unwrapOr(mixed $default)`
-        - [x] `unwrapOrElse()`
         - [x] `map()`
         - [x] `mapErr()`
         - [ ] `mapOr()` - Returns contained value or computes from closure
-        - [ ] `mapOrElse(callback $default, callback $fn)` - Map with lazy default function
         - [ ] `expect(string $message)`
         - [ ] `expectErr(string $message)`
         - [ ] `andThen(callback $fn)`

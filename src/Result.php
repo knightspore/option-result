@@ -125,7 +125,7 @@ class Result
             return $this->unwrap();
         }
 
-        return $or;
+        return is_callable($or) ? $or() : $or;
     }
 
     /**
