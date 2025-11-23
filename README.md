@@ -1,5 +1,7 @@
 # option-result - Rust-style `Option` and `Result` Classes for PHP
 
+> ["So you can take down ~20% of the internet, but with PHP"](https://blog.cloudflare.com/18-november-2025-outage/#memory-preallocation)
+
 This library contains two classes: `Option` and `Result`.
 
 `Option<T>` represents an optional value. An option may be `some` or `none`, where `some(T)` contains a value and `none` does not.
