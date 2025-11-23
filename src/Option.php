@@ -19,7 +19,7 @@ class Option {
         * @return Option<T>
     */
 
-    public static function Some(mixed $value): static {
+    public static function Some(mixed $value = true): static {
         return new static($value, true);
     }
 

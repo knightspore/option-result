@@ -9,6 +9,13 @@ class OptionTest extends TestCase
     // =========================================================================
     // STATIC CONSTRUCTOR TESTS
     // =========================================================================
+    
+    public function testDefaultValue(): void
+    {
+        $option = Option::Some();
+        $this->assertTrue($option->isSome());
+        $this->assertSame(true, $option->unwrap());
+    }
 
     public function testSomeCreatesOptionWithValue(): void
     {

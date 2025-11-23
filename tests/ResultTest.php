@@ -15,6 +15,13 @@ class ResultTest extends TestCase
     // ==============================================
     // Static Constructor Tests
     // ==============================================
+    //
+    public function testDefaultValue(): void
+    {
+        $result = Result::Ok();
+        $this->assertTrue($result->isOk());
+        $this->assertSame(true, $result->unwrap());
+    }
 
     public function testOkConstructor(): void
     {

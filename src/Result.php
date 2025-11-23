@@ -19,7 +19,7 @@ class Result {
       * @return Result<T,never>
     */
 
-    public static function Ok(mixed $value): static {
+    public static function Ok(mixed $value = true): static {
         return new static($value, true);
     }
 
