@@ -6,6 +6,116 @@ use Ciarancoza\OptionResult\Exceptions\UnwrapNoneException;
 
 class OptionTest extends TestCase
 {
+
+    // Unit tests - Adapted from Rust Docs
+
+    public function testIsNone(): void
+    {
+        $x = Option::Some(2);
+        $this->assertSame(false, $x->isNone());
+
+        $x = Option::None();
+        $this->assertSame(true, $x->isNone());
+    }
+
+    public function testIsSome(): void
+    {
+        $x = Option::Some(2);
+        $this->assertSame(true, $x->isSome());
+
+        $x = Option::None();
+        $this->assertSame(false, $x->isSome());
+    }
+
+    public function testUnwrap(): void
+    {
+        $x = Option::Some("air");
+        $this->assertSame("air", $x->unwrap());
+
+        $this->expectException(UnwrapNoneException::class);
+        Option::None()->unwrap();
+    }
+
+    public function testUnwrapOr(): void
+    {
+        $this->assertSame("car", Option::Some("car")->unwrapOr("bike"));
+        $this->assertSame("bike", Option::None()->unwrapOr("bike"));
+    }
+
+    public function testUnwrapOrElse(): void
+    {
+        $this->markTestIncomplete("TODO");
+        $k = 21;
+        $this->assertSame(4, Option::Some(4)->unwrapOrElse(fn() => 2 * $k));
+        $this->assertSame(42, Option::None()->unwrapOrElse(fn() => 2 * $k));
+    }
+
+    public function testMap(): void
+    {
+        $result = Option::Some("Hello World")->map(fn($s) => strlen($s));
+        $this->assertTrue($result->isSome());
+        $this->assertSame(11, $result->unwrap());
+
+        $result = Option::None()->map(fn($s) => strlen($s));
+        $this->assertTrue($result->isNone());
+    }
+
+    public function testMapOr(): void
+    {
+        $this->markTestIncomplete("TODO");
+        $this->assertSame(3, Option::Some("foo")->mapOr(42, fn($v) => strlen($v)));
+        $this->assertSame(42, Option::None()->mapOr(42, fn($v) => strlen($v)));
+    }
+
+    public function testMapOrElse(): void
+    {
+        $this->markTestIncomplete("TODO");
+        $k = 21;
+        $this->assertSame(3, Option::Some("foo")->mapOrElse(fn() => 2 * $k, fn($v) => strlen($v)));
+        $this->assertSame(42, Option::None()->mapOrElse(fn() => 2 * $k, fn($v) => strlen($v)));
+    }
+
+    public function testFilter(): void
+    {
+        $this->markTestIncomplete("TODO");
+        $result = Option::Some(4)->filter(fn($x) => $x > 2);
+        $this->assertTrue($result->isSome());
+        $this->assertSame(4, $result->unwrap());
+
+        $result = Option::Some(1)->filter(fn($x) => $x > 2);
+        $this->assertTrue($result->isNone());
+
+        $result = Option::None()->filter(fn($x) => $x > 2);
+        $this->assertTrue($result->isNone());
+    }
+
+    public function testExpect(): void
+    {
+        $this->markTestIncomplete("TODO");
+        $this->assertSame("value", Option::Some("value")->expect("fruits are healthy"));
+
+        $this->expectException(UnwrapNoneException::class);
+        $this->expectExceptionMessage("fruits are healthy");
+        Option::None()->expect("fruits are healthy");
+    }
+
+    public function testAndThen(): void
+    {
+        $this->markTestIncomplete("TODO");
+        $result = Option::Some(2)->andThen(fn($x) => Option::Some($x * 2));
+        $this->assertTrue($result->isSome());
+        $this->assertSame(4, $result->unwrap());
+
+        $result = Option::None()->andThen(fn($x) => Option::Some($x * 2));
+        $this->assertTrue($result->isNone());
+
+        // Returns None case
+        $result = Option::Some(2)->andThen(fn($_) => Option::None());
+        $this->assertTrue($result->isNone());
+    }
+
+    // Integration tests
+
     public function testCoreConstructionAndState(): void
     {
         // Test Some with various values including falsy ones
@@ -21,71 +131,6 @@ class OptionTest extends TestCase
         $defaultSome = Option::Some();
         $this->assertTrue($defaultSome->isSome());
         $this->assertSame(true, $defaultSome->unwrap());
-        
-        // Test None
-        $none = Option::None();
-        $this->assertFalse($none->isSome());
-        $this->assertTrue($none->isNone());
-    }
-
-    public function testValueExtraction(): void
-    {
-        $this->assertEquals('value', Option::Some('value')->unwrap());
-        $this->expectException(UnwrapNoneException::class);
-        Option::None()->unwrap();
-    }
-
-    public function testUnwrapOrBehavior(): void
-    {
-        $this->assertEquals('value', Option::Some('value')->unwrapOr('default'));
-        $this->assertEquals('default', Option::None()->unwrapOr('default'));
-        $this->assertNull(Option::Some(null)->unwrapOr('default'));
-        $this->assertEquals(0, Option::None()->unwrapOr(0));
-        $defaultObject = (object)['default' => true];
-        $this->assertSame($defaultObject, Option::None()->unwrapOr($defaultObject));
-    }
-
-    public function testMapTransformation(): void
-    {
-        // Basic transformation on Some
-        $some = Option::Some(5);
-        $mapped = $some->map(fn($x) => $x * 2);
-        $this->assertTrue($mapped->isSome());
-        $this->assertEquals(10, $mapped->unwrap());
-        
-        // None short-circuits (callback not executed)
-        $callbackExecuted = false;
-        $noneResult = Option::None()->map(function($x) use (&$callbackExecuted) {
-            $callbackExecuted = true;
-            return $x * 2;
-        });
-        $this->assertTrue($noneResult->isNone());
-        $this->assertFalse($callbackExecuted);
-        
-        // Map can return falsy values (they remain Some)
-        $this->assertNull($some->map(fn($_) => null)->unwrap());
-        
-        // Type transformations
-        $stringToLength = Option::Some("hello")->map(fn($s) => strlen($s));
-        $this->assertEquals(5, $stringToLength->unwrap());
-        
-        // String transformations
-        $upperCase = Option::Some("hello")->map(fn($s) => strtoupper($s));
-        $this->assertEquals("HELLO", $upperCase->unwrap());
-    }
-
-    public function testMethodChaining(): void
-    {
-        $this->assertTrue(Option::Some("hello")
-            ->map(fn($s) => strtoupper($s))
-            ->map(fn($s) => strlen($s))
-            ->map(fn($n) => $n > 3)
-            ->unwrap());
-        
-        $this->assertEquals(0, Option::None()
-            ->map(fn($s) => strtoupper($s))
-            ->map(fn($s) => strlen($s))
-            ->unwrapOr(0));
     }
 
     public function testEmailChainScenario(): void

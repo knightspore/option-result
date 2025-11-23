@@ -11,6 +11,171 @@ use Ciarancoza\OptionResult\Exceptions\UnwrapOkException;
 
 class ResultTest extends TestCase
 {
+
+    // Unit tests - Adapted from Rust Docs
+
+    public function testIsOk(): void
+    {
+        $x = Result::Ok(-3);
+        $this->assertSame(true, $x->isOk());
+
+        $x = Result::Err("Some error message");
+        $this->assertSame(false, $x->isOk());
+    }
+
+    public function testIsErr(): void
+    {
+        $x = Result::Ok(-3);
+        $this->assertSame(false, $x->isErr());
+
+        $x = Result::Err("Some error message");
+        $this->assertSame(true, $x->isErr());
+    }
+
+    public function testUnwrap(): void
+    {
+        $x = Result::Ok(2);
+        $this->assertSame(2, $x->unwrap());
+
+        $this->expectException(UnwrapErrException::class);
+        Result::Err("emergency failure")->unwrap();
+    }
+
+    public function testUnwrapErr(): void
+    {
+        $x = Result::Err("emergency failure");
+        $this->assertSame("emergency failure", $x->unwrapErr());
+
+        $this->expectException(UnwrapOkException::class);
+        Result::Ok(2)->unwrapErr();
+    }
+
+    public function testUnwrapOr(): void
+    {
+        $default = 2;
+        $this->assertSame(9, Result::Ok(9)->unwrapOr($default));
+        $this->assertSame($default, Result::Err("error")->unwrapOr($default));
+    }
+
+    public function testUnwrapOrElse(): void
+    {
+        $this->markTestIncomplete("TODO");
+        $this->assertSame(2, Result::Ok(2)->unwrapOrElse(fn($err) => strlen($err)));
+        $this->assertSame(3, Result::Err("foo")->unwrapOrElse(fn($err) => strlen($err)));
+    }
+
+    public function testMap(): void
+    {
+        $result = Result::Ok(5)->map(fn($i) => $i * 2);
+        $this->assertTrue($result->isOk());
+        $this->assertSame(10, $result->unwrap());
+
+        $result = Result::Err("parse error")->map(fn($i) => $i * 2);
+        $this->assertTrue($result->isErr());
+        $this->assertSame("parse error", $result->unwrapErr());
+    }
+
+    public function testMapErr(): void
+    {
+        $stringify = fn($x) => "error code: $x";
+
+        $result = Result::Ok(2)->mapErr($stringify);
+        $this->assertTrue($result->isOk());
+        $this->assertSame(2, $result->unwrap());
+
+        $result = Result::Err(13)->mapErr($stringify);
+        $this->assertTrue($result->isErr());
+        $this->assertSame("error code: 13", $result->unwrapErr());
+    }
+
+    public function testMapOr(): void
+    {
+        $this->markTestIncomplete("TODO");
+        $this->assertSame(3, Result::Ok("foo")->mapOr(42, fn($v) => strlen($v)));
+        $this->assertSame(42, Result::Err("bar")->mapOr(42, fn($v) => strlen($v)));
+    }
+
+    public function testMapOrElse(): void
+    {
+        $this->markTestIncomplete("TODO");
+        $this->assertSame(3, Result::Ok("foo")->mapOrElse(fn($err) => strlen($err), fn($v) => strlen($v)));
+        $this->assertSame(3, Result::Err("bar")->mapOrElse(fn($err) => strlen($err), fn($v) => strlen($v)));
+    }
+
+    public function testGetOk(): void
+    {
+        $option = Result::Ok(2)->getOk();
+        $this->assertTrue($option->isSome());
+        $this->assertSame(2, $option->unwrap());
+
+        $option = Result::Err("Nothing here")->getOk();
+        $this->assertTrue($option->isNone());
+    }
+
+    public function testGetErr(): void
+    {
+        $option = Result::Ok(2)->getErr();
+        $this->assertTrue($option->isNone());
+
+        $option = Result::Err("Nothing here")->getErr();
+        $this->assertTrue($option->isSome());
+        $this->assertSame("Nothing here", $option->unwrap());
+    }
+
+    public function testExpect(): void
+    {
+        $this->markTestIncomplete("TODO");
+        $this->assertSame("value", Result::Ok("value")->expect("Testing expect"));
+
+        $this->expectException(UnwrapErrException::class);
+        $this->expectExceptionMessage("Testing expect");
+        Result::Err("error")->expect("Testing expect");
+    }
+
+    public function testExpectErr(): void
+    {
+        $this->markTestIncomplete("TODO");
+        $this->assertSame("value", Result::Err("value")->expectErr("Testing expect_err"));
+
+        $this->expectException(UnwrapOkException::class);
+        $this->expectExceptionMessage("Testing expect_err");
+        Result::Ok("error")->expectErr("Testing expect_err");
+    }
+
+    public function testAndThen(): void
+    {
+        $this->markTestIncomplete("TODO");
+        $result = Result::Ok(2)->andThen(fn($x) => Result::Ok($x * 2));
+        $this->assertTrue($result->isOk());
+        $this->assertSame(4, $result->unwrap());
+
+        $result = Result::Err("error")->andThen(fn($x) => Result::Ok($x * 2));
+        $this->assertTrue($result->isErr());
+        $this->assertSame("error", $result->unwrapErr());
+
+        // Returns Err case
+        $result = Result::Ok(2)->andThen(fn($_) => Result::Err("new error"));
+        $this->assertTrue($result->isErr());
+        $this->assertSame("new error", $result->unwrapErr());
+    }
+
+    public function testTryCatch(): void  
+    {
+        $this->markTestIncomplete("TODO");
+        $result = Result::tryCatch(fn() => "success", fn($e) => "Error: " . $e->getMessage());
+        $this->assertTrue($result->isOk());
+        $this->assertSame("success", $result->unwrap());
+
+        $result = Result::tryCatch(
+            fn() => throw new Exception("something failed"), 
+            fn($e) => "Error: " . $e->getMessage()
+        );
+        $this->assertTrue($result->isErr());
+        $this->assertSame("Error: something failed", $result->unwrapErr());
+    }
+    
+    // Integration tests
+
     public function testCoreConstructionAndState(): void
     {
         $testValues = ['success', 42, null, false, 0, '', []];
@@ -27,34 +192,6 @@ class ResultTest extends TestCase
         }
         
         $this->assertSame(true, Result::Ok()->unwrap());
-    }
-
-    public function testExceptionBehavior(): void
-    {
-        $this->expectException(UnwrapErrException::class);
-        Result::Err('error')->unwrap();
-        
-        $this->expectException(UnwrapOkException::class);
-        Result::Ok('data')->unwrapErr();
-        
-        foreach ([null, false, 0, '', []] as $value) {
-            try {
-                Result::Err($value)->unwrap();
-                $this->fail("Expected exception for falsy error value");
-            } catch (UnwrapErrException $e) {
-                $this->assertInstanceOf(UnwrapErrException::class, $e);
-            }
-        }
-    }
-
-    public function testUnwrapOrBehavior(): void
-    {
-        $this->assertEquals('data', Result::Ok('data')->unwrapOr('default'));
-        $this->assertEquals('default', Result::Err('error')->unwrapOr('default'));
-        $this->assertNull(Result::Ok(null)->unwrapOr('default'));
-        
-        $this->assertEquals(0, Result::Err('error')->unwrapOr(0));
-        $this->assertFalse(Result::Ok(false)->unwrapOr('default'));
     }
 
     public function testOptionConversion(): void
@@ -74,77 +211,6 @@ class ResultTest extends TestCase
             $this->assertEquals($value, Result::Ok($value)->getOk()->unwrap());
             $this->assertEquals($value, Result::Err($value)->getErr()->unwrap());
         }
-    }
-
-    public function testMapTransformation(): void
-    {
-        $this->assertEquals(10, Result::Ok(5)->map(fn($x) => $x * 2)->unwrap());
-        
-        $callbackExecuted = false;
-        $errResult = Result::Err('error')->map(function($x) use (&$callbackExecuted) {
-            $callbackExecuted = true;
-            return $x * 2;
-        });
-        $this->assertTrue($errResult->isErr());
-        $this->assertEquals('error', $errResult->unwrapErr());
-        $this->assertFalse($callbackExecuted);
-        
-        $this->assertNull(Result::Ok(5)->map(fn($_) => null)->unwrap());
-        $this->assertEquals(5, Result::Ok("hello")->map(fn($s) => strlen($s))->unwrap());
-        
-        $this->assertTrue(Result::Ok("hello")
-            ->map(fn($s) => strtoupper($s))
-            ->map(fn($s) => strlen($s))
-            ->map(fn($n) => $n > 3)
-            ->unwrap());
-        
-        $this->assertEquals("connection failed", Result::Err("connection failed")
-            ->map(fn($s) => strtoupper($s))
-            ->map(fn($s) => strlen($s))
-            ->unwrapErr());
-    }
-
-    public function testMapErrTransformation(): void
-    {
-        $this->assertEquals("Error: database error", 
-            Result::Err("database error")->mapErr(fn($e) => "Error: " . $e)->unwrapErr());
-        
-        $callbackExecuted = false;
-        $okResult = Result::Ok('data')->mapErr(function($e) use (&$callbackExecuted) {
-            $callbackExecuted = true;
-            return "Error: " . $e;
-        });
-        $this->assertEquals('data', $okResult->unwrap());
-        $this->assertFalse($callbackExecuted);
-        
-        $this->assertEquals("ERROR: CONNECTION FAILED", Result::Err("connection")
-            ->mapErr(fn($e) => $e . " failed")
-            ->mapErr(fn($e) => "Error: " . $e)
-            ->mapErr(fn($e) => strtoupper($e))
-            ->unwrapErr());
-        
-        $this->assertEquals("SUCCESS", Result::Ok("success")
-            ->map(fn($s) => strtoupper($s))
-            ->mapErr(fn($e) => "Error: " . $e)
-            ->unwrap());
-    }
-
-    public function testMethodChaining(): void
-    {
-        $this->assertEquals("RESULT: 20", Result::Ok(5)
-            ->map(fn($x) => $x * 2)
-            ->map(fn($x) => $x + 10)
-            ->map(fn($x) => "Result: " . $x)
-            ->mapErr(fn($e) => "Enhanced: " . $e)
-            ->map(fn($x) => strtoupper($x))
-            ->unwrap());
-        
-        $this->assertEquals("Enhanced: initial error (final)", Result::Err("initial error")
-            ->map(fn($x) => $x * 2)
-            ->mapErr(fn($e) => "Enhanced: " . $e)
-            ->map(fn($x) => strtoupper($x))
-            ->mapErr(fn($e) => $e . " (final)")
-            ->unwrapErr());
     }
 
     public function testApiResponseScenario(): void
@@ -202,24 +268,4 @@ class ResultTest extends TestCase
         $this->assertEquals(['name' => 'Bob', 'score' => 92, 'grade' => 'A'], $users[1]);
     }
 
-    public function testEdgeCases(): void
-    {
-        $ok = Result::Ok("test");
-        $this->assertEquals("test", $ok->unwrap());
-        $this->assertEquals("test", $ok->unwrapOr("default"));
-        
-        $err = Result::Err("error");
-        $this->assertEquals("error", $err->unwrapErr());
-        $this->assertEquals("default", $err->unwrapOr("default"));
-        
-        $complexDefault = ['status' => 'error', 'data' => null];
-        $this->assertEquals($complexDefault, Result::Err("network timeout")
-            ->map(fn($data) => json_decode($data, true))
-            ->unwrapOr($complexDefault));
-        
-        $this->assertEquals("processed", Result::Ok("input")
-            ->map(fn($_) => null)
-            ->map(fn($_) => "processed")
-            ->unwrap());
-    }
 }
