@@ -85,6 +85,19 @@ class Option
     }
 
     /**
+      * Returns the contained `some` value or computes from closure
+      *
+      * @param callable(): V $fn
+      * @return T|V
+      */
+    public function unwrapOrElse(callable $fn): mixed {
+        if ($this->isSome()) {
+            return $this->unwrap();
+        }
+        return $fn();
+    }
+
+    /**
      * Calls `fn` on contained value if `some`, returns `none` if `none`
      *
      * @template U

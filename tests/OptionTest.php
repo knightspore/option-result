@@ -43,7 +43,6 @@ class OptionTest extends TestCase
 
     public function test_unwrap_or_else(): void
     {
-        $this->markTestIncomplete('TODO');
         $k = 21;
         $this->assertSame(4, Option::Some(4)->unwrapOrElse(fn () => 2 * $k));
         $this->assertSame(42, Option::None()->unwrapOrElse(fn () => 2 * $k));

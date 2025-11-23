@@ -58,7 +58,6 @@ class ResultTest extends TestCase
 
     public function test_unwrap_or_else(): void
     {
-        $this->markTestIncomplete('TODO');
         $this->assertSame(2, Result::Ok(2)->unwrapOrElse(fn ($err) => strlen($err)));
         $this->assertSame(3, Result::Err('foo')->unwrapOrElse(fn ($err) => strlen($err)));
     }

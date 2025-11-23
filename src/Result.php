@@ -128,6 +128,19 @@ class Result
         return $or;
     }
 
+     /**
+       * Returns the contained `ok` value or computes from closure with error value
+       *
+       * @param callable(E): V $fn
+       * @return T|V
+       */
+     public function unwrapOrElse(callable $fn): mixed {
+         if ($this->isOk()) {
+             return $this->unwrap();
+         }
+         return $fn($this->value);
+     }
+
     /**
      * If `ok`, transform the value with `$fn`
      *
