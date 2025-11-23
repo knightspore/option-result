@@ -83,6 +83,7 @@ $userData = processUser(123);
         - [ ] `expect(string $message)`
         - [ ] `expectErr(string $message)`
         - [ ] `andThen(callback $fn)`
+        - [ ] `safe(throwable $fn, callback $onMapErr)` could be cool
 
 ## Contributing
 
