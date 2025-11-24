@@ -198,11 +198,13 @@ class ResultTest extends TestCase
         $this->assertTrue($okNoneType->isOk());
         $this->assertFalse($okNoneType->isErr());
         $this->assertNull($okNoneType->unwrap());
+        $this->assertEquals('test', $okNoneType->getOk()->unwrapOr('test'));
 
         $errNoneType = Result::Err(null);
         $this->assertTrue($errNoneType->isErr());
         $this->assertFalse($errNoneType->isOk());
         $this->assertNull($errNoneType->unwrapErr());
+        $this->assertEquals('test', $errNoneType->getErr()->unwrapOr('test'));
     }
 
     public function test_option_conversion(): void
