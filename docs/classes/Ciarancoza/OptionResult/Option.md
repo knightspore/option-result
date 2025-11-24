@@ -140,3 +140,20 @@ public map(callable $fn): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResu
 | `$fn`     | **callable** | Function to transform the value |
 
 ***
+
+### mapOr
+
+Calls `fn` on a contained value if `some`, or returns $or if `none`
+
+```php
+public mapOr(mixed $or, callable $fn): \Ciarancoza\OptionResult\V|\Ciarancoza\OptionResult\U
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description                     |
+|-----------|--------------|---------------------------------|
+| `$or`     | **mixed**    |                                 |
+| `$fn`     | **callable** | Function to transform the value |
+
+***

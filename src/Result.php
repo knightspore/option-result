@@ -161,6 +161,23 @@ class Result
     }
 
     /**
+     * Calls `fn` on a contained value if `ok`, or returns $or if `err`
+     *
+     * @template V $or
+     * @template U
+     *
+     * @param  callable(T): U  $fn  Function to transform the value
+     * @return V|U
+     */
+    public function mapOr(mixed $or, callable $fn): mixed
+    {
+        return match (true) {
+            $this->isOk() => $fn($this->unwrap()),
+            $this->isErr() => is_callable($or) ? $or() : $or,
+        };
+    }
+
+    /**
      * If `err`, transform the error value with `$fn`
      *
      * @template U

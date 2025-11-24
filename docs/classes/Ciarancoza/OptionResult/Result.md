@@ -198,6 +198,23 @@ public map(callable $fn): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResu
 
 ***
 
+### mapOr
+
+Calls `fn` on a contained value if `ok`, or returns $or if `err`
+
+```php
+public mapOr(mixed $or, callable $fn): \Ciarancoza\OptionResult\V|\Ciarancoza\OptionResult\U
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description                     |
+|-----------|--------------|---------------------------------|
+| `$or`     | **mixed**    |                                 |
+| `$fn`     | **callable** | Function to transform the value |
+
+***
+
 ### mapErr
 
 If `err`, transform the error value with `$fn`

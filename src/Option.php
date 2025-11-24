@@ -104,4 +104,21 @@ class Option
 
         return Option::Some($fn($this->value));
     }
+
+    /**
+     * Calls `fn` on a contained value if `some`, or returns $or if `none`
+     *
+     * @template V $or
+     * @template U
+     *
+     * @param  callable(T): U  $fn  Function to transform the value
+     * @return V|U
+     */
+    public function mapOr(mixed $or, callable $fn): mixed
+    {
+        return match (true) {
+            $this->isSome() => $fn($this->unwrap()),
+            $this->isNone() => is_callable($or) ? $or() : $or,
+        };
+    }
 }

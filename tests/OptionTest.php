@@ -60,9 +60,11 @@ class OptionTest extends TestCase
 
     public function test_map_or(): void
     {
-        $this->markTestIncomplete('TODO');
         $this->assertSame(3, Option::Some('foo')->mapOr(42, fn ($v) => strlen($v)));
         $this->assertSame(42, Option::None()->mapOr(42, fn ($v) => strlen($v)));
+
+        $this->assertSame(3, Option::Some('foo')->mapOr(fn () => 42, fn ($v) => strlen($v)));
+        $this->assertSame(42, Option::None()->mapOr(fn () => 42, fn ($v) => strlen($v)));
     }
 
     public function test_map_or_else(): void

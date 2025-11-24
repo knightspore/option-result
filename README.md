@@ -61,35 +61,47 @@ You can view [the generated documentation](https://github.com/knightspore/option
 
 - Add useful methods
     - Option
-        - [x] `Some()`
+        - [ ] `and()`
+        - [ ] `andThen()`
+        - [ ] `expect()`
+        - [ ] `filter()`
+        - [ ] `inspect()`
+        - [ ] `reduce()`
+        - [ ] `replace()`
+        - [ ] `take()`
+        - [ ] `takeIf()`
         - [x] `None()`
-        - [x] `isSome()`
+        - [x] `Some()`
         - [x] `isNone()`
+        - [x] `isSome()`
+        - [x] `map()`
+        - [x] `mapOr()`
         - [x] `unwrap()`
         - [x] `unwrapOr()`
-        - [x] `map()`
-        - [ ] `mapOr()`
-        - [ ] `filter(callback $predicate)`
-        - [ ] `expect(string $message)`
-        - [ ] `and(mixed $value)`
-        - [ ] `andThen(callback $fn)` - Returns result of `fn(contained value)` if some, or returns none
     - Result
-        - [x] `Ok()`
+        - [ ] `and()`
+        - [ ] `andThen()`
+        - [ ] `expect()`
+        - [ ] `expectErr()`
+        - [ ] `inspect()`
+        - [ ] `inspectErr()`
+        - [ ] `or()`
+        - [ ] `tryCatch()`
         - [x] `Err()`
-        - [x] `isOk()`
-        - [x] `isErr()`
-        - [x] `getOk()`
+        - [x] `Ok()`
         - [x] `getErr()`
+        - [x] `getOk()`
+        - [x] `isErr()`
+        - [x] `isOk()`
+        - [x] `map()`
+        - [x] `mapErr()`
+        - [x] `mapOr()` 
         - [x] `unwrap()`
         - [x] `unwrapErr()`
         - [x] `unwrapOr(mixed $default)`
-        - [x] `map()`
-        - [x] `mapErr()`
-        - [ ] `mapOr()` - Returns contained value or computes from closure
-        - [ ] `expect(string $message)`
-        - [ ] `expectErr(string $message)`
-        - [ ] `andThen(callback $fn)`
-        - [ ] `tryCatch(callback $tryFn, callback $onMapErr)` - Returns Ok if operation is successful or calls onMapErr with the Err if it throws
+- Refactor
+    - Use match where possible
+    - Use `$this` calls where possible
 
 ## Contributing
 
