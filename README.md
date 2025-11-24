@@ -11,7 +11,7 @@ This library contains two classes: `Option` and `Result`.
 ## Installation
 
 ```bash
-composer require --dev ciarancoza/option-result
+composer require ciarancoza/option-result
 ```
 
 ## Usage
@@ -50,6 +50,7 @@ function getActiveEmails(int $orgId): array {
         ->map(fn ($org) => $org->getEmails())
         ->map(fn ($emails) => $emails['active'])
         ->mapErr(fn ($error) => "Failed to get active emails: " . $error")
+        ->mapErr(fn ($error) => Log::error($error))
         ->unwrapOr([]);
 }
 ```

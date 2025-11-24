@@ -174,6 +174,6 @@ class Result
             return Result::Ok($this->value);
         }
 
-        return Result::Err($fn($this->value));
+        return Result::Err($fn($this->unwrapErr()));
     }
 }
