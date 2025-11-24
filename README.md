@@ -49,7 +49,7 @@ function getActiveEmails(int $orgId): array {
     return fetchOrgData($orgId)
         ->map(fn ($org) => $org->getEmails())
         ->map(fn ($emails) => $emails['active'])
-        ->mapErr(fn ($error) => "Failed to get active emails: " . $error")
+        ->mapErr(fn ($error) => "Failed to get active emails: " . $error)
         ->mapErr(fn ($error) => Log::error($error))
         ->unwrapOr([]);
 }
