@@ -117,10 +117,9 @@ class OptionTest extends TestCase
     public function test_core_construction_and_state(): void
     {
         // Test Some with various values including falsy ones
-        $testValues = ['hello', 42, null, false, 0, '', []];
+        $testValues = ['hello', 42, false, 0, '', []];
         foreach ($testValues as $value) {
             $some = Option::Some($value);
-            $this->assertTrue($some->isSome());
             $this->assertFalse($some->isNone());
             $this->assertSame($value, $some->unwrap());
         }
@@ -129,6 +128,12 @@ class OptionTest extends TestCase
         $defaultSome = Option::Some();
         $this->assertTrue($defaultSome->isSome());
         $this->assertSame(true, $defaultSome->unwrap());
+
+        // Test null -> None value
+        $shouldBeNone = Option::Some(null);
+        $this->assertTrue($shouldBeNone->isNone());
+        $this->expectException(UnwrapNoneException::class);
+        $shouldBeNone->unwrap();
     }
 
     public function test_email_chain_scenario(): void
@@ -155,7 +160,7 @@ class OptionTest extends TestCase
         };
 
         $this->assertEquals('john@example.com', $findUserEmail(123)->unwrapOr('no-email@example.com'));
-        $this->assertNull($findUserEmail(456)->unwrapOr('no-email@example.com')); // Some(null)
+        $this->assertEquals('no-email@example.com', $findUserEmail(456)->unwrapOr('no-email@example.com')); // Some(null)
         $this->assertEquals('no-email@example.com', $findUserEmail(999)->unwrapOr('no-email@example.com'));
     }
 

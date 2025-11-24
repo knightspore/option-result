@@ -179,7 +179,7 @@ class ResultTest extends TestCase
 
     public function test_core_construction_and_state(): void
     {
-        $testValues = ['success', 42, null, false, 0, '', []];
+        $testValues = ['success', 42, false, 0, '', []];
         foreach ($testValues as $value) {
             $ok = Result::Ok($value);
             $this->assertTrue($ok->isOk());
@@ -193,6 +193,16 @@ class ResultTest extends TestCase
         }
 
         $this->assertSame(true, Result::Ok()->unwrap());
+
+        $okNoneType = Result::Ok(null);
+        $this->assertTrue($okNoneType->isOk());
+        $this->assertFalse($okNoneType->isErr());
+        $this->assertNull($okNoneType->unwrap());
+
+        $errNoneType = Result::Err(null);
+        $this->assertTrue($errNoneType->isErr());
+        $this->assertFalse($errNoneType->isOk());
+        $this->assertNull($errNoneType->unwrapErr());
     }
 
     public function test_option_conversion(): void
@@ -208,7 +218,7 @@ class ResultTest extends TestCase
         $this->assertEquals('error', $err->getErr()->unwrap());
         $this->assertTrue($ok->getErr()->isNone());
 
-        foreach ([null, false, 0, '', []] as $value) {
+        foreach ([false, 0, '', []] as $value) {
             $this->assertEquals($value, Result::Ok($value)->getOk()->unwrap());
             $this->assertEquals($value, Result::Err($value)->getErr()->unwrap());
         }

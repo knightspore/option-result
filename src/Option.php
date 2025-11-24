@@ -22,6 +22,10 @@ class Option
      */
     public static function Some(mixed $value = true): static
     {
+        if ($value === null) {
+            return self::None();
+        }
+
         return new static($value, true);
     }
 
