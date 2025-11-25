@@ -177,8 +177,6 @@ class OptionTest extends TestCase
 
     public function test_replace(): void
     {
-        $this->markTestIncomplete('TODO');
-
         $x = Option::Some(2);
         $old = $x->replace(5);
         $this->assertTrue($x->isSome());

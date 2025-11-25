@@ -219,4 +219,21 @@ class Option
             default => self::None(),
         };
     }
+
+    /*
+    * Replaces the actual value in the option by the value given in the parameter, returning the old value if present
+    *
+    * @template NT
+    * @return Option<T>
+    */
+    public function replace(mixed $value)
+    {
+        $old = clone $this;
+        $this->value = $value;
+        if ($this->isNone()) {
+            $this->isSome = true;
+        }
+
+        return $old;
+    }
 }

@@ -258,3 +258,17 @@ public reduce(self $other, callable $fn): self
 | `$fn`     | **callable** |             |
 
 ***
+
+### replace
+
+```php
+public replace(mixed $value): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$value`  | **mixed** |             |
+
+***

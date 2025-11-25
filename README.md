@@ -61,8 +61,6 @@ You can view [the generated documentation](https://github.com/knightspore/option
 
 - Add useful methods
     - Option
-        - [ ] `reduce()`
-        - [ ] `replace()`
         - [ ] `take()`
         - [ ] `takeIf()`
         - [x] `None()`
@@ -76,6 +74,8 @@ You can view [the generated documentation](https://github.com/knightspore/option
         - [x] `isSome()`
         - [x] `map()`
         - [x] `mapOr()`
+        - [x] `reduce()`
+        - [x] `replace()`
         - [x] `unwrap()`
         - [x] `unwrapOr()`
     - Result
