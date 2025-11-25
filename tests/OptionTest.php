@@ -115,7 +115,6 @@ class OptionTest extends TestCase
 
     public function test_and_then(): void
     {
-        $this->markTestIncomplete('TODO');
         $result = Option::Some(2)->andThen(fn ($x) => Option::Some($x * 2));
         $this->assertTrue($result->isSome());
         $this->assertSame(4, $result->unwrap());

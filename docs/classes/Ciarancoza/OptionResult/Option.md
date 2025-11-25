@@ -106,6 +106,22 @@ public and(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\V> $and): \C
 
 ***
 
+### andThen
+
+Calls `$then` on contained value and returns if `some`, otherwise returns `none`
+
+```php
+public andThen(callable $then): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description                     |
+|-----------|--------------|---------------------------------|
+| `$then`   | **callable** | Function to transform the value |
+
+***
+
 ### unwrap
 
 Returns the contained value if `some`, otherwise throws UnwrapNoneException.

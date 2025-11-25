@@ -65,10 +65,26 @@ class Option
      * @param  Option<V>  $and
      * @return Option<V>
      */
-    public function and(self $and): mixed
+    public function and(self $and): Option
     {
         return match (true) {
             $this->isSome() => $and,
+            $this->isNone() => self::None(),
+        };
+    }
+
+    /**
+     * Calls `$then` on contained value and returns if `some`, otherwise returns `none`
+     *
+     * @template U
+     *
+     * @param  callable(T): Option<U>  $then  Function to transform the value
+     * @return Option<U>
+     */
+    public function andThen(callable $then): Option
+    {
+        return match (true) {
+            $this->isSome() => $then($this->unwrap()),
             $this->isNone() => self::None(),
         };
     }
