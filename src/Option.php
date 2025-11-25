@@ -65,11 +65,11 @@ class Option
      * @param  Option<V>  $and
      * @return Option<V>
      */
-    public function and(Option $and): mixed
+    public function and(self $and): mixed
     {
         return match (true) {
             $this->isSome() => $and,
-            $this->isNone() => Option::None(),
+            $this->isNone() => self::None(),
         };
     }
 
@@ -112,13 +112,13 @@ class Option
      * @param  callable(T): U  $fn  Function to transform the value
      * @return Option<U>
      */
-    public function map(callable $fn): Option
+    public function map(callable $fn): self
     {
         if ($this->isNone()) {
-            return Option::None();
+            return self::None();
         }
 
-        return Option::Some($fn($this->value));
+        return self::Some($fn($this->value));
     }
 
     /**
