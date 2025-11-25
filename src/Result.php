@@ -54,6 +54,40 @@ class Result
     }
 
     /**
+     * Returns `$and` if `ok`, otherwise returns the current `err`
+     *
+     * @template V
+     *
+     * @param  Result<V,E>  $and
+     * @return Result<V,E>
+     */
+    public function and(self $and): Result
+    {
+        if ($this->isErr()) {
+            return Result::Err($this->unwrapErr());
+        }
+
+        return $and;
+    }
+
+    /**
+     * Calls `$then` on contained value if `ok`, otherwise returns the current `err`
+     *
+     * @template U
+     *
+     * @param  callable(T): Result<U,E>  $then  Function to transform the value
+     * @return Result<U,E>
+     */
+    public function andThen(callable $then): Result
+    {
+        if ($this->isErr()) {
+            return Result::Err($this->unwrapErr());
+        }
+
+        return $then($this->unwrap());
+    }
+
+    /**
      * Throws UnwrapErrException with a custom message if `err`, otherwise returns the inner value
      *
      * @return T

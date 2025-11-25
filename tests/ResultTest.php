@@ -143,9 +143,24 @@ class ResultTest extends TestCase
         Result::Ok('error')->expectErr('Testing expect_err');
     }
 
+    public function test_and(): void
+    {
+        $result = Result::Ok(2)->and(Result::Ok(4));
+        $this->assertTrue($result->isOk());
+        $this->assertSame(4, $result->unwrap());
+
+        $result = Result::Err('error')->and(Result::Ok(2));
+        $this->assertTrue($result->isErr());
+        $this->assertSame('error', $result->unwrapErr());
+
+        // Returns Err case
+        $result = Result::Ok(2)->and(Result::Err('new error'));
+        $this->assertTrue($result->isErr());
+        $this->assertSame('new error', $result->unwrapErr());
+    }
+
     public function test_and_then(): void
     {
-        $this->markTestIncomplete('TODO');
         $result = Result::Ok(2)->andThen(fn ($x) => Result::Ok($x * 2));
         $this->assertTrue($result->isOk());
         $this->assertSame(4, $result->unwrap());

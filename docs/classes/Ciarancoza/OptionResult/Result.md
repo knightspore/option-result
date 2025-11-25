@@ -94,6 +94,38 @@ public isErr(): bool
 
 ***
 
+### and
+
+Returns `$and` if `ok`, otherwise returns the current `err`
+
+```php
+public and(\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\V,\Ciarancoza\OptionResult\E> $and): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\V,\Ciarancoza\OptionResult\E>
+```
+
+**Parameters:**
+
+| Parameter | Type                                                                                       | Description |
+|-----------|--------------------------------------------------------------------------------------------|-------------|
+| `$and`    | **\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\V,\Ciarancoza\OptionResult\E>** |             |
+
+***
+
+### andThen
+
+Calls `$then` on contained value if `ok`, otherwise returns the current `err`
+
+```php
+public andThen(callable $then): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\E>
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description                     |
+|-----------|--------------|---------------------------------|
+| `$then`   | **callable** | Function to transform the value |
+
+***
+
 ### expect
 
 Throws UnwrapErrException with a custom message if `err`, otherwise returns the inner value
