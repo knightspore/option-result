@@ -79,14 +79,14 @@ You can view [the generated documentation](https://github.com/knightspore/option
         - [x] `unwrap()`
         - [x] `unwrapOr()`
     - Result
-        - [ ] `and()`
-        - [ ] `andThen()`
         - [ ] `inspect()`
         - [ ] `inspectErr()`
         - [ ] `or()`
         - [ ] `tryCatch()`
         - [x] `Err()`
         - [x] `Ok()`
+        - [x] `and()`
+        - [x] `andThen()`
         - [x] `expect()`
         - [x] `expectErr()`
         - [x] `getErr()`
