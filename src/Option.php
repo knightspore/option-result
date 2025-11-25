@@ -107,6 +107,20 @@ class Option
     }
 
     /**
+     * Returns `None` if the option is `None`, otherwise calls `predicate` with the wrapped value and returns:
+     * - `Some(T)` if `predicate` returns `true`, and
+     * - `None` if `predicate` returns `false`
+     */
+    public function filter(callable $predicate): self
+    {
+        if ($this->isSome() && $predicate($this->unwrap())) {
+            return $this;
+        }
+
+        return self::None();
+    }
+
+    /**
      * Returns the contained value if `some`, otherwise throws UnwrapNoneException.
      *
      * @return T The contained value

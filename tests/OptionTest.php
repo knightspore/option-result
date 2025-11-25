@@ -77,7 +77,6 @@ class OptionTest extends TestCase
 
     public function test_filter(): void
     {
-        $this->markTestIncomplete('TODO');
         $result = Option::Some(4)->filter(fn ($x) => $x > 2);
         $this->assertTrue($result->isSome());
         $this->assertSame(4, $result->unwrap());

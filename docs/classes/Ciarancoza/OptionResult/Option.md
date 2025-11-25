@@ -142,6 +142,24 @@ public expect(string $msg): \Ciarancoza\OptionResult\T
 
 ***
 
+### filter
+
+Returns `None` if the option is `None`, otherwise calls `predicate` with the wrapped value and returns:
+- `Some(T)` if `predicate` returns `true`, and
+- `None` if `predicate` returns `false`
+
+```php
+public filter(callable $predicate): self
+```
+
+**Parameters:**
+
+| Parameter    | Type         | Description |
+|--------------|--------------|-------------|
+| `$predicate` | **callable** |             |
+
+***
+
 ### unwrap
 
 Returns the contained value if `some`, otherwise throws UnwrapNoneException.
