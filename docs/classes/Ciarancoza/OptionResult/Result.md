@@ -94,6 +94,46 @@ public isErr(): bool
 
 ***
 
+### expect
+
+Throws UnwrapErrException with a custom message if `err`, otherwise returns the inner value
+
+```php
+public expect(string $msg): \Ciarancoza\OptionResult\T
+```
+
+**Parameters:**
+
+| Parameter | Type       | Description |
+|-----------|------------|-------------|
+| `$msg`    | **string** |             |
+
+**Throws:**
+
+- [`UnwrapErrException`](./Exceptions/UnwrapErrException)
+
+***
+
+### expectErr
+
+Throws UnwrapOkException with a custom message if `ok`, otherwise returns the inner error value
+
+```php
+public expectErr(string $msg): \Ciarancoza\OptionResult\E
+```
+
+**Parameters:**
+
+| Parameter | Type       | Description |
+|-----------|------------|-------------|
+| `$msg`    | **string** |             |
+
+**Throws:**
+
+- [`UnwrapOkException`](./Exceptions/UnwrapOkException)
+
+***
+
 ### getOk
 
 Returns `Some(T)` if `ok`, or `None` if `err`

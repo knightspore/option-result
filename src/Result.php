@@ -54,6 +54,38 @@ class Result
     }
 
     /**
+     * Throws UnwrapErrException with a custom message if `err`, otherwise returns the inner value
+     *
+     * @return T
+     *
+     * @throws UnwrapErrException
+     */
+    public function expect(string $msg): mixed
+    {
+        if ($this->isErr()) {
+            throw new UnwrapErrException($msg);
+        }
+
+        return $this->unwrap();
+    }
+
+    /**
+     * Throws UnwrapOkException with a custom message if `ok`, otherwise returns the inner error value
+     *
+     * @return E
+     *
+     * @throws UnwrapOkException
+     */
+    public function expectErr(string $msg): mixed
+    {
+        if ($this->isOk()) {
+            throw new UnwrapOkException($msg);
+        }
+
+        return $this->unwrapErr();
+    }
+
+    /**
      * Returns `Some(T)` if `ok`, or `None` if `err`
      *
      * @return Option<T>

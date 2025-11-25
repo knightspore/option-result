@@ -61,7 +61,6 @@ You can view [the generated documentation](https://github.com/knightspore/option
 
 - Add useful methods
     - Option
-        - [ ] `expect()`
         - [ ] `filter()`
         - [ ] `inspect()`
         - [ ] `reduce()`
@@ -72,6 +71,7 @@ You can view [the generated documentation](https://github.com/knightspore/option
         - [x] `Some()`
         - [x] `and()`
         - [x] `andThen()`
+        - [x] `expect()`
         - [x] `isNone()`
         - [x] `isSome()`
         - [x] `map()`
@@ -81,14 +81,14 @@ You can view [the generated documentation](https://github.com/knightspore/option
     - Result
         - [ ] `and()`
         - [ ] `andThen()`
-        - [ ] `expect()`
-        - [ ] `expectErr()`
         - [ ] `inspect()`
         - [ ] `inspectErr()`
         - [ ] `or()`
         - [ ] `tryCatch()`
         - [x] `Err()`
         - [x] `Ok()`
+        - [x] `expect()`
+        - [x] `expectErr()`
         - [x] `getErr()`
         - [x] `getOk()`
         - [x] `isErr()`
@@ -100,8 +100,8 @@ You can view [the generated documentation](https://github.com/knightspore/option
         - [x] `unwrapErr()`
         - [x] `unwrapOr(mixed $default)`
 - Refactor
-    - Use match where possible
-    - Use `$this` calls where possible
+    - Use clear if statements everywhere match doesn't make sense
+    - Make sure doc comments are accurate and re-generate docs
 
 ## Contributing
 

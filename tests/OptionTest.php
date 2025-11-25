@@ -91,7 +91,6 @@ class OptionTest extends TestCase
 
     public function test_expect(): void
     {
-        $this->markTestIncomplete('TODO');
         $this->assertSame('value', Option::Some('value')->expect('fruits are healthy'));
 
         $this->expectException(UnwrapNoneException::class);

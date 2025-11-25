@@ -122,6 +122,26 @@ public andThen(callable $then): \Ciarancoza\OptionResult\Option<\Ciarancoza\Opti
 
 ***
 
+### expect
+
+Throws UnwrapNoneException with a custom error message if `none`, otherwise returns the inner value
+
+```php
+public expect(string $msg): \Ciarancoza\OptionResult\T
+```
+
+**Parameters:**
+
+| Parameter | Type       | Description |
+|-----------|------------|-------------|
+| `$msg`    | **string** |             |
+
+**Throws:**
+
+- [`UnwrapNoneException`](./Exceptions/UnwrapNoneException)
+
+***
+
 ### unwrap
 
 Returns the contained value if `some`, otherwise throws UnwrapNoneException.

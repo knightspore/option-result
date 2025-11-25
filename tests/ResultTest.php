@@ -127,7 +127,6 @@ class ResultTest extends TestCase
 
     public function test_expect(): void
     {
-        $this->markTestIncomplete('TODO');
         $this->assertSame('value', Result::Ok('value')->expect('Testing expect'));
 
         $this->expectException(UnwrapErrException::class);
@@ -137,7 +136,6 @@ class ResultTest extends TestCase
 
     public function test_expect_err(): void
     {
-        $this->markTestIncomplete('TODO');
         $this->assertSame('value', Result::Err('value')->expectErr('Testing expect_err'));
 
         $this->expectException(UnwrapOkException::class);

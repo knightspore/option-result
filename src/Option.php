@@ -90,6 +90,23 @@ class Option
     }
 
     /**
+     * Throws UnwrapNoneException with a custom error message if `none`, otherwise returns the inner value
+     *
+     *
+     * @return T
+     *
+     * @throws UnwrapNoneException
+     */
+    public function expect(string $msg): mixed
+    {
+        if ($this->isNone()) {
+            throw new UnwrapNoneException($msg);
+        }
+
+        return $this->unwrap();
+    }
+
+    /**
      * Returns the contained value if `some`, otherwise throws UnwrapNoneException.
      *
      * @return T The contained value
