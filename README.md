@@ -100,11 +100,11 @@ You can view [the generated documentation](https://github.com/knightspore/option
         - [x] `unwrapErr()`
         - [x] `unwrapOr(mixed $default)`
 - Refactor
+    - Consider move to Interface+Enum for easier instantiation
     - Use clear if statements everywhere match doesn't make sense
     - Review compared to rust types
         - Input / Output types
         - Type Docs 
-    - Re-generate docs
 
 ## Contributing
 
