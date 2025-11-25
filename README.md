@@ -101,7 +101,10 @@ You can view [the generated documentation](https://github.com/knightspore/option
         - [x] `unwrapOr(mixed $default)`
 - Refactor
     - Use clear if statements everywhere match doesn't make sense
-    - Make sure doc comments are accurate and re-generate docs
+    - Review compared to rust types
+        - Input / Output types
+        - Type Docs 
+    - Re-generate docs
 
 ## Contributing
 
