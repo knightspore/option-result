@@ -154,8 +154,6 @@ class OptionTest extends TestCase
 
     public function test_reduce(): void
     {
-        $this->markTestIncomplete('TODO');
-
         $s12 = Option::Some(12);
         $s17 = Option::Some(17);
         $n = Option::None();

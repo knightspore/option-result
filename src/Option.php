@@ -200,4 +200,23 @@ class Option
             $this->isNone() => is_callable($or) ? $or() : $or,
         };
     }
+
+    /*
+    * Reduces to options into one, using the provided function if both are `some`
+    *
+    * @template U
+    * @template R
+    * @param Option<U> $other
+    * @param callable(T, U): R $fn
+    * @return Option<T|U|R>
+    */
+    public function reduce(self $other, callable $fn): self
+    {
+        return match (true) {
+            $this->isSome() && $other->isSome() => self::Some($fn($this->unwrap(), $other->unwrap())),
+            $this->isSome() => $this,
+            $other->isSome() => $other,
+            default => self::None(),
+        };
+    }
 }

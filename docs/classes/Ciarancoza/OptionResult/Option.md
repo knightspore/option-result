@@ -243,3 +243,18 @@ public mapOr(mixed $or, callable $fn): \Ciarancoza\OptionResult\V|\Ciarancoza\Op
 | `$fn`     | **callable** | Function to transform the value |
 
 ***
+
+### reduce
+
+```php
+public reduce(self $other, callable $fn): self
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description |
+|-----------|--------------|-------------|
+| `$other`  | **self**     |             |
+| `$fn`     | **callable** |             |
+
+***
