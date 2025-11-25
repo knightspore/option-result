@@ -110,6 +110,8 @@ class Option
      * Returns `None` if the option is `None`, otherwise calls `predicate` with the wrapped value and returns:
      * - `Some(T)` if `predicate` returns `true`, and
      * - `None` if `predicate` returns `false`
+     *
+     * @param  callable(T): bool  $predicate
      */
     public function filter(callable $predicate): self
     {
@@ -118,6 +120,20 @@ class Option
         }
 
         return self::None();
+    }
+
+    /**
+     * Calls a function on the contained value if `Some`. Returns the original option in either case.
+     *
+     * @param  callable(T)  $fn
+     */
+    public function inspect(callable $fn): self
+    {
+        if ($this->isSome()) {
+            $fn($this->unwrap());
+        }
+
+        return $this;
     }
 
     /**

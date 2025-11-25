@@ -127,8 +127,6 @@ class OptionTest extends TestCase
 
     public function test_inspect(): void
     {
-        $this->markTestIncomplete('TODO');
-
         $inspected = null;
         $result = Option::Some(4)->inspect(function ($x) use (&$inspected) {
             $inspected = $x;
@@ -145,6 +143,13 @@ class OptionTest extends TestCase
 
         $this->assertTrue($result->isNone());
         $this->assertNull($inspected); // Should not be called
+
+        $result = Option::Some(2)->inspect(function ($x) use (&$inspected) {
+            $x += $inspected;
+        })->unwrap();
+
+        $this->assertSame(2, $result);
+
     }
 
     public function test_reduce(): void

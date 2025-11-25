@@ -160,6 +160,22 @@ public filter(callable $predicate): self
 
 ***
 
+### inspect
+
+Calls a function on the contained value if `Some`. Returns the original option in either case.
+
+```php
+public inspect(callable $fn): self
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description |
+|-----------|--------------|-------------|
+| `$fn`     | **callable** |             |
+
+***
+
 ### unwrap
 
 Returns the contained value if `some`, otherwise throws UnwrapNoneException.
