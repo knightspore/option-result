@@ -262,7 +262,7 @@ public reduce(self $other, callable $fn): self
 ### replace
 
 ```php
-public replace(mixed $value): mixed
+public replace(mixed $value): self
 ```
 
 **Parameters:**
@@ -270,5 +270,27 @@ public replace(mixed $value): mixed
 | Parameter | Type      | Description |
 |-----------|-----------|-------------|
 | `$value`  | **mixed** |             |
+
+***
+
+### take
+
+```php
+public take(): self
+```
+
+***
+
+### takeIf
+
+```php
+public takeIf(callable $predicate): \Ciarancoza\OptionResult\Option
+```
+
+**Parameters:**
+
+| Parameter    | Type         | Description |
+|--------------|--------------|-------------|
+| `$predicate` | **callable** |             |
 
 ***

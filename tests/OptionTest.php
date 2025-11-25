@@ -193,8 +193,6 @@ class OptionTest extends TestCase
 
     public function test_take(): void
     {
-        $this->markTestIncomplete('TODO');
-
         $x = Option::Some(2);
         $y = $x->take();
         $this->assertTrue($x->isNone());
@@ -209,8 +207,6 @@ class OptionTest extends TestCase
 
     public function test_take_if(): void
     {
-        $this->markTestIncomplete('TODO');
-
         $x = Option::Some(42);
         $prev = $x->takeIf(function (&$v) {
             if ($v === 42) {

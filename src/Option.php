@@ -224,16 +224,49 @@ class Option
     * Replaces the actual value in the option by the value given in the parameter, returning the old value if present
     *
     * @template NT
+    *
     * @return Option<T>
     */
-    public function replace(mixed $value)
+    public function replace(mixed $value): self
     {
         $old = clone $this;
-        $this->value = $value;
-        if ($this->isNone()) {
+        if ($this->isNone() && $value !== null) {
             $this->isSome = true;
         }
+        $this->value = $value;
 
         return $old;
+    }
+
+    /*
+    * Takes the value out of the option, leaving a `None` in its place
+    *
+    * return Option<T>
+    */
+    public function take(): self
+    {
+        $old = clone $this;
+        $this->value = null;
+        $this->isSome = false;
+
+        return $old;
+    }
+
+    /*
+     * Takes the value out of the option, but only if the predicate evaluates to `true`.
+     *
+     * @param  callable(T): bool  $predicate
+    *  @return Option<T>
+    */
+    public function takeIf(callable $predicate): Option
+    {
+        if ($this->isNone()) {
+            return self::None();
+        }
+        if ($predicate($this->value)) {
+            return $this->take();
+        }
+
+        return self::None();
     }
 }
