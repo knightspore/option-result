@@ -90,6 +90,22 @@ public isNone(): bool
 
 ***
 
+### and
+
+Returns `$and` if `some`, otherwise returns `none`
+
+```php
+public and(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\V> $and): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\V>
+```
+
+**Parameters:**
+
+| Parameter | Type                                                            | Description |
+|-----------|-----------------------------------------------------------------|-------------|
+| `$and`    | **\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\V>** |             |
+
+***
+
 ### unwrap
 
 Returns the contained value if `some`, otherwise throws UnwrapNoneException.

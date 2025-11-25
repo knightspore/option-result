@@ -61,7 +61,6 @@ You can view [the generated documentation](https://github.com/knightspore/option
 
 - Add useful methods
     - Option
-        - [ ] `and()`
         - [ ] `andThen()`
         - [ ] `expect()`
         - [ ] `filter()`
@@ -72,6 +71,7 @@ You can view [the generated documentation](https://github.com/knightspore/option
         - [ ] `takeIf()`
         - [x] `None()`
         - [x] `Some()`
+        - [x] `and()`
         - [x] `isNone()`
         - [x] `isSome()`
         - [x] `map()`

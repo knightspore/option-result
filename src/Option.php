@@ -58,6 +58,22 @@ class Option
     }
 
     /**
+     * Returns `$and` if `some`, otherwise returns `none`
+     *
+     * @template V
+     *
+     * @param  Option<V>  $and
+     * @return Option<V>
+     */
+    public function and(Option $and): mixed
+    {
+        return match (true) {
+            $this->isSome() => $and,
+            $this->isNone() => Option::None(),
+        };
+    }
+
+    /**
      * Returns the contained value if `some`, otherwise throws UnwrapNoneException.
      *
      * @return T The contained value

@@ -99,6 +99,20 @@ class OptionTest extends TestCase
         Option::None()->expect('fruits are healthy');
     }
 
+    public function test_and(): void
+    {
+        $result = Option::Some(2)->and(Option::Some(4));
+        $this->assertTrue($result->isSome());
+        $this->assertSame(4, $result->unwrap());
+
+        $result = Option::None()->and(Option::Some(2));
+        $this->assertTrue($result->isNone());
+
+        // Returns None case
+        $result = Option::Some(2)->and(Option::None());
+        $this->assertTrue($result->isNone());
+    }
+
     public function test_and_then(): void
     {
         $this->markTestIncomplete('TODO');
