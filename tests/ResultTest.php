@@ -190,6 +190,81 @@ class ResultTest extends TestCase
         $this->assertSame('Error: something failed', $result->unwrapErr());
     }
 
+    public function test_inspect(): void
+    {
+        $this->markTestIncomplete('TODO');
+
+        $inspected = null;
+        $result = Result::Ok(4)->inspect(function ($x) use (&$inspected) {
+            $inspected = $x;
+        });
+
+        $this->assertTrue($result->isOk());
+        $this->assertSame(4, $result->unwrap());
+        $this->assertSame(4, $inspected);
+
+        $inspected = null;
+        $result = Result::Err('error')->inspect(function ($x) use (&$inspected) {
+            $inspected = $x;
+        });
+
+        $this->assertTrue($result->isErr());
+        $this->assertSame('error', $result->unwrapErr());
+        $this->assertNull($inspected); // Should not be called for Err
+    }
+
+    public function test_inspect_err(): void
+    {
+        $this->markTestIncomplete('TODO');
+
+        $inspected = null;
+        $result = Result::Err('error')->inspectErr(function ($e) use (&$inspected) {
+            $inspected = $e;
+        });
+
+        $this->assertTrue($result->isErr());
+        $this->assertSame('error', $result->unwrapErr());
+        $this->assertSame('error', $inspected);
+
+        $inspected = null;
+        $result = Result::Ok(42)->inspectErr(function ($e) use (&$inspected) {
+            $inspected = $e;
+        });
+
+        $this->assertTrue($result->isOk());
+        $this->assertSame(42, $result->unwrap());
+        $this->assertNull($inspected); // Should not be called for Ok
+    }
+
+    public function test_or(): void
+    {
+        $this->markTestIncomplete('TODO');
+
+        $x = Result::Ok(2);
+        $y = Result::Err('late error');
+        $result = $x->or($y);
+        $this->assertTrue($result->isOk());
+        $this->assertSame(2, $result->unwrap());
+
+        $x = Result::Err('early error');
+        $y = Result::Ok(2);
+        $result = $x->or($y);
+        $this->assertTrue($result->isOk());
+        $this->assertSame(2, $result->unwrap());
+
+        $x = Result::Err('not a 2');
+        $y = Result::Err('late error');
+        $result = $x->or($y);
+        $this->assertTrue($result->isErr());
+        $this->assertSame('late error', $result->unwrapErr());
+
+        $x = Result::Ok(2);
+        $y = Result::Ok(100);
+        $result = $x->or($y);
+        $this->assertTrue($result->isOk());
+        $this->assertSame(2, $result->unwrap());
+    }
+
     // Integration tests
 
     public function test_core_construction_and_state(): void

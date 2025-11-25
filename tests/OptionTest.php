@@ -126,6 +126,117 @@ class OptionTest extends TestCase
         $this->assertTrue($result->isNone());
     }
 
+    public function test_inspect(): void
+    {
+        $this->markTestIncomplete('TODO');
+
+        $inspected = null;
+        $result = Option::Some(4)->inspect(function ($x) use (&$inspected) {
+            $inspected = $x;
+        });
+
+        $this->assertTrue($result->isSome());
+        $this->assertSame(4, $result->unwrap());
+        $this->assertSame(4, $inspected);
+
+        $inspected = null;
+        $result = Option::None()->inspect(function ($x) use (&$inspected) {
+            $inspected = $x;
+        });
+
+        $this->assertTrue($result->isNone());
+        $this->assertNull($inspected); // Should not be called
+    }
+
+    public function test_reduce(): void
+    {
+        $this->markTestIncomplete('TODO');
+
+        $s12 = Option::Some(12);
+        $s17 = Option::Some(17);
+        $n = Option::None();
+        $f = fn ($a, $b) => $a + $b;
+
+        $result = $s12->reduce($s17, $f);
+        $this->assertTrue($result->isSome());
+        $this->assertSame(29, $result->unwrap());
+
+        $result = $s12->reduce($n, $f);
+        $this->assertTrue($result->isSome());
+        $this->assertSame(12, $result->unwrap());
+
+        $result = $n->reduce($s17, $f);
+        $this->assertTrue($result->isSome());
+        $this->assertSame(17, $result->unwrap());
+
+        $result = $n->reduce($n, $f);
+        $this->assertTrue($result->isNone());
+    }
+
+    public function test_replace(): void
+    {
+        $this->markTestIncomplete('TODO');
+
+        $x = Option::Some(2);
+        $old = $x->replace(5);
+        $this->assertTrue($x->isSome());
+        $this->assertSame(5, $x->unwrap());
+        $this->assertTrue($old->isSome());
+        $this->assertSame(2, $old->unwrap());
+
+        $x = Option::None();
+        $old = $x->replace(3);
+        $this->assertTrue($x->isSome());
+        $this->assertSame(3, $x->unwrap());
+        $this->assertTrue($old->isNone());
+    }
+
+    public function test_take(): void
+    {
+        $this->markTestIncomplete('TODO');
+
+        $x = Option::Some(2);
+        $y = $x->take();
+        $this->assertTrue($x->isNone());
+        $this->assertTrue($y->isSome());
+        $this->assertSame(2, $y->unwrap());
+
+        $x = Option::None();
+        $y = $x->take();
+        $this->assertTrue($x->isNone());
+        $this->assertTrue($y->isNone());
+    }
+
+    public function test_take_if(): void
+    {
+        $this->markTestIncomplete('TODO');
+
+        $x = Option::Some(42);
+        $prev = $x->takeIf(function (&$v) {
+            if ($v === 42) {
+                $v += 1;
+
+                return false;
+            }
+
+            return false;
+        });
+        $this->assertTrue($x->isSome());
+        $this->assertSame(43, $x->unwrap());
+        $this->assertTrue($prev->isNone());
+
+        $x = Option::Some(43);
+        $prev = $x->takeIf(fn ($v) => $v === 43);
+        $this->assertTrue($x->isNone());
+        $this->assertTrue($prev->isSome());
+        $this->assertSame(43, $prev->unwrap());
+
+        $x = Option::None();
+        $prev = $x->takeIf(fn ($v) => true);
+        $this->assertTrue($x->isNone());
+        $this->assertTrue($prev->isNone());
+    }
+
     // Integration tests
 
     public function test_core_construction_and_state(): void
