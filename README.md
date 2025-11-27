@@ -59,52 +59,16 @@ You can view [the generated documentation](https://github.com/knightspore/option
 
 ## Road Map
 
-- Add useful methods
-    - Option
-        - [x] `takeIf()`
-        - [x] `None()`
-        - [x] `Some()`
-        - [x] `and()`
-        - [x] `andThen()`
-        - [x] `expect()`
-        - [x] `filter()`
-        - [x] `inspect()`
-        - [x] `isNone()`
-        - [x] `isSome()`
-        - [x] `map()`
-        - [x] `mapOr()`
-        - [x] `reduce()`
-        - [x] `replace()`
-        - [x] `take()`
-        - [x] `unwrap()`
-        - [x] `unwrapOr()`
-    - Result
+- Option
+    - [ ] TODO
+        - [ ] `or()`
+- Result
+    - [ ] TODO
         - [ ] `inspect()`
         - [ ] `inspectErr()`
         - [ ] `or()`
         - [ ] `tryCatch()`
-        - [x] `Err()`
-        - [x] `Ok()`
-        - [x] `and()`
-        - [x] `andThen()`
-        - [x] `expect()`
-        - [x] `expectErr()`
-        - [x] `getErr()`
-        - [x] `getOk()`
-        - [x] `isErr()`
-        - [x] `isOk()`
-        - [x] `map()`
-        - [x] `mapErr()`
-        - [x] `mapOr()` 
-        - [x] `unwrap()`
-        - [x] `unwrapErr()`
-        - [x] `unwrapOr(mixed $default)`
-- Refactor
-    - Consider move to Interface+Enum for easier instantiation
-    - Use clear if statements everywhere match doesn't make sense
-    - Review compared to rust types
-        - Input / Output types
-        - Type Docs 
+    - Refactor for v1
 
 ## Contributing
 

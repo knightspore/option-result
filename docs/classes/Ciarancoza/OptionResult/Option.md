@@ -27,34 +27,6 @@ private bool $isSome
 
 ## Methods
 
-### Some
-
-Creates a `some` Option
-
-```php
-public static Some(\Ciarancoza\OptionResult\T $value = true): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>
-```
-
-* This method is **static**.
-**Parameters:**
-
-| Parameter | Type                           | Description |
-|-----------|--------------------------------|-------------|
-| `$value`  | **\Ciarancoza\OptionResult\T** |             |
-
-***
-
-### None
-
-Creates a `none` Option
-
-```php
-public static None(): \Ciarancoza\OptionResult\Option<never>
-```
-
-* This method is **static**.
-***
-
 ### __construct
 
 ```php
@@ -70,61 +42,41 @@ private __construct(\Ciarancoza\OptionResult\T $value, bool $isSome): mixed
 
 ***
 
-### isSome
-
-Returns `true` if the option is a `some` option.
-
-```php
-public isSome(): bool
-```
-
-***
-
-### isNone
-
-Returns `true` if the option is a `none` option.
-
-```php
-public isNone(): bool
-```
-
-***
-
 ### and
 
-Returns `$and` if `some`, otherwise returns `none`
+Returns `None` if the option is `None`, otherwise returns `$optb`
 
 ```php
-public and(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\V> $and): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\V>
+public and(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U> $optb): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>
 ```
 
 **Parameters:**
 
 | Parameter | Type                                                            | Description |
 |-----------|-----------------------------------------------------------------|-------------|
-| `$and`    | **\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\V>** |             |
+| `$optb`   | **\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>** |             |
 
 ***
 
 ### andThen
 
-Calls `$then` on contained value and returns if `some`, otherwise returns `none`
+Returns `None` if the option is `None`, otherwise calls `$f` with the wrapped value and returns the result.
 
 ```php
-public andThen(callable $then): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>
+public andThen(callable $f): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>
 ```
 
 **Parameters:**
 
-| Parameter | Type         | Description                     |
-|-----------|--------------|---------------------------------|
-| `$then`   | **callable** | Function to transform the value |
+| Parameter | Type         | Description |
+|-----------|--------------|-------------|
+| `$f`      | **callable** |             |
 
 ***
 
 ### expect
 
-Throws UnwrapNoneException with a custom error message if `none`, otherwise returns the inner value
+Returns the contained `Some` value, or throws UnwrapNoneException if the value is `None` with a custom panic message provided by `$msg`.
 
 ```php
 public expect(string $msg): \Ciarancoza\OptionResult\T
@@ -144,12 +96,12 @@ public expect(string $msg): \Ciarancoza\OptionResult\T
 
 ### filter
 
-Returns `None` if the option is `None`, otherwise calls `predicate` with the wrapped value and returns:
-- `Some(T)` if `predicate` returns `true`, and
+Returns `None` if the option is `None`, otherwise calls `$predicate` with the wrapped value and returns:
+- `Some(T)` if `predicate` returns `true` (where `t` is the wrapped value and
 - `None` if `predicate` returns `false`
 
 ```php
-public filter(callable $predicate): self
+public filter(callable $predicate): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>
 ```
 
 **Parameters:**
@@ -162,35 +114,132 @@ public filter(callable $predicate): self
 
 ### inspect
 
-Calls a function on the contained value if `Some`. Returns the original option in either case.
+Calls a function with a reference to the contained value if `Some`
 
 ```php
-public inspect(callable $fn): self
+public inspect(callable $f): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>
 ```
 
 **Parameters:**
 
 | Parameter | Type         | Description |
 |-----------|--------------|-------------|
-| `$fn`     | **callable** |             |
+| `$f`      | **callable** |             |
+
+***
+
+### isNone
+
+Returns `true` of the option is a `None` value
+
+```php
+public isNone(): bool
+```
+
+***
+
+### isSome
+
+Returns `true` of the option is a `Some` value
+
+```php
+public isSome(): bool
+```
+
+***
+
+### map
+
+Maps an `Option<T>` to `Option<U>` by applying a function to a contained value (if `Some`) or returns `None` (if `None`)
+
+```php
+public map(callable $f): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description |
+|-----------|--------------|-------------|
+| `$f`      | **callable** |             |
+
+***
+
+### mapOr
+
+Returns the provided default (if none), or applies a function to the contained value (if any).
+
+```php
+public mapOr(\Ciarancoza\OptionResult\V $or, callable $f): \Ciarancoza\OptionResult\U|\Ciarancoza\OptionResult\V
+```
+
+**Parameters:**
+
+| Parameter | Type                           | Description |
+|-----------|--------------------------------|-------------|
+| `$or`     | **\Ciarancoza\OptionResult\V** |             |
+| `$f`      | **callable**                   |             |
+
+***
+
+### None
+
+Creates a `none` Option
+
+```php
+public static None(): \Ciarancoza\OptionResult\Option<never>
+```
+
+* This method is **static**.
+***
+
+### reduce
+
+Reduces two options into one, using the provided function if both are `Some`.
+
+```php
+public reduce(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\V> $other, callable $f): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U|\Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\V>
+```
+
+If `$this` is `Some(s)` and `$other` is `Some(o)`, this method returns `Some($f(s,o))`.
+Otherwise, if only one of `$this` and `$other` is `Some`, that one is returned.
+If both `$this` and `$other` are `None`, `None` is returned.
+
+**Parameters:**
+
+| Parameter | Type                                                            | Description |
+|-----------|-----------------------------------------------------------------|-------------|
+| `$other`  | **\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\V>** |             |
+| `$f`      | **callable**                                                    |             |
+
+***
+
+### Some
+
+Creates a `some` Option
+
+```php
+public static Some(\Ciarancoza\OptionResult\T $value = true): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>
+```
+
+* This method is **static**.
+**Parameters:**
+
+| Parameter | Type                           | Description |
+|-----------|--------------------------------|-------------|
+| `$value`  | **\Ciarancoza\OptionResult\T** |             |
 
 ***
 
 ### unwrap
 
-Returns the contained value if `some`, otherwise throws UnwrapNoneException.
+Returns the contained `Some` value or throws UnwrapNoneException
 
 ```php
 public unwrap(): \Ciarancoza\OptionResult\T
 ```
 
-**Return Value:**
-
-The contained value
-
 **Throws:**
 
-When called on `None`
 - [`UnwrapNoneException`](./Exceptions/UnwrapNoneException)
 
 ***
@@ -208,89 +257,5 @@ public unwrapOr(\Ciarancoza\OptionResult\V $or): \Ciarancoza\OptionResult\T|\Cia
 | Parameter | Type                           | Description |
 |-----------|--------------------------------|-------------|
 | `$or`     | **\Ciarancoza\OptionResult\V** |             |
-
-***
-
-### map
-
-Calls `fn` on contained value if `some`, returns `none` if `none`
-
-```php
-public map(callable $fn): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>
-```
-
-**Parameters:**
-
-| Parameter | Type         | Description                     |
-|-----------|--------------|---------------------------------|
-| `$fn`     | **callable** | Function to transform the value |
-
-***
-
-### mapOr
-
-Calls `fn` on a contained value if `some`, or returns $or if `none`
-
-```php
-public mapOr(mixed $or, callable $fn): \Ciarancoza\OptionResult\V|\Ciarancoza\OptionResult\U
-```
-
-**Parameters:**
-
-| Parameter | Type         | Description                     |
-|-----------|--------------|---------------------------------|
-| `$or`     | **mixed**    |                                 |
-| `$fn`     | **callable** | Function to transform the value |
-
-***
-
-### reduce
-
-```php
-public reduce(self $other, callable $fn): self
-```
-
-**Parameters:**
-
-| Parameter | Type         | Description |
-|-----------|--------------|-------------|
-| `$other`  | **self**     |             |
-| `$fn`     | **callable** |             |
-
-***
-
-### replace
-
-```php
-public replace(mixed $value): self
-```
-
-**Parameters:**
-
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$value`  | **mixed** |             |
-
-***
-
-### take
-
-```php
-public take(): self
-```
-
-***
-
-### takeIf
-
-```php
-public takeIf(callable $predicate): \Ciarancoza\OptionResult\Option
-```
-
-**Parameters:**
-
-| Parameter    | Type         | Description |
-|--------------|--------------|-------------|
-| `$predicate` | **callable** |             |
 
 ***

@@ -13,85 +13,51 @@ use Ciarancoza\OptionResult\Exceptions\UnwrapNoneException;
 class Option
 {
     /**
-     * Creates a `some` Option
-     *
-     * @template T
+     * @nodoc
      *
      * @param  T  $value
-     * @return Option<T>
      */
-    public static function Some(mixed $value = true): static
-    {
-        if ($value === null) {
-            return self::None();
-        }
-
-        return new static($value, true);
-    }
-
-    /**
-     * Creates a `none` Option
-     *
-     * @return Option<never>
-     */
-    public static function None(): static
-    {
-        return new static(null, false);
-    }
-
-    /** @param T $value */
     private function __construct(
         private mixed $value,
         private bool $isSome
     ) {}
 
-    /** Returns `true` if the option is a `some` option. */
-    public function isSome(): bool
-    {
-        return $this->isSome;
-    }
-
-    /** Returns `true` if the option is a `none` option. */
-    public function isNone(): bool
-    {
-        return ! $this->isSome();
-    }
-
     /**
-     * Returns `$and` if `some`, otherwise returns `none`
-     *
-     * @template V
-     *
-     * @param  Option<V>  $and
-     * @return Option<V>
-     */
-    public function and(self $and): Option
-    {
-        return match (true) {
-            $this->isSome() => $and,
-            $this->isNone() => self::None(),
-        };
-    }
-
-    /**
-     * Calls `$then` on contained value and returns if `some`, otherwise returns `none`
+     * Returns `None` if the option is `None`, otherwise returns `$optb`
      *
      * @template U
      *
-     * @param  callable(T): Option<U>  $then  Function to transform the value
+     * @param  Option<U>  $optb
      * @return Option<U>
      */
-    public function andThen(callable $then): Option
+    public function and(self $optb): Option
     {
-        return match (true) {
-            $this->isSome() => $then($this->unwrap()),
-            $this->isNone() => self::None(),
-        };
+        if ($this->isSome()) {
+            return $optb;
+        }
+
+        return static::None();
     }
 
     /**
-     * Throws UnwrapNoneException with a custom error message if `none`, otherwise returns the inner value
+     * Returns `None` if the option is `None`, otherwise calls `$f` with the wrapped value and returns the result.
      *
+     * @template U
+     *
+     * @param  callable(T): Option<U>  $f
+     * @return Option<U>
+     */
+    public function andThen(callable $f): Option
+    {
+        if ($this->isSome()) {
+            return $f($this->unwrap());
+        }
+
+        return static::None();
+    }
+
+    /**
+     * Returns the contained `Some` value, or throws UnwrapNoneException if the value is `None` with a custom panic message provided by `$msg`.
      *
      * @return T
      *
@@ -107,41 +73,149 @@ class Option
     }
 
     /**
-     * Returns `None` if the option is `None`, otherwise calls `predicate` with the wrapped value and returns:
-     * - `Some(T)` if `predicate` returns `true`, and
+     * Returns `None` if the option is `None`, otherwise calls `$predicate` with the wrapped value and returns:
+     * - `Some(T)` if `predicate` returns `true` (where `t` is the wrapped value and
      * - `None` if `predicate` returns `false`
      *
      * @param  callable(T): bool  $predicate
+     * @return Option<T>
      */
     public function filter(callable $predicate): self
     {
         if ($this->isSome() && $predicate($this->unwrap())) {
-            return $this;
+            return static::Some($this->unwrap());
         }
 
-        return self::None();
+        return static::None();
     }
 
     /**
-     * Calls a function on the contained value if `Some`. Returns the original option in either case.
+     * Calls a function with a reference to the contained value if `Some`
      *
-     * @param  callable(T)  $fn
+     * @param  callable(T): void  $f
+     * @return Option<T>
      */
-    public function inspect(callable $fn): self
+    public function inspect(callable $f): self
     {
         if ($this->isSome()) {
-            $fn($this->unwrap());
+            $f($this->unwrap());
+
+            return static::Some($this->unwrap());
         }
 
-        return $this;
+        return static::None();
     }
 
     /**
-     * Returns the contained value if `some`, otherwise throws UnwrapNoneException.
+     * Returns `true` of the option is a `None` value
+     */
+    public function isNone(): bool
+    {
+        return ! $this->isSome();
+    }
+
+    /**
+     * Returns `true` of the option is a `Some` value
+     */
+    public function isSome(): bool
+    {
+        return $this->isSome;
+    }
+
+    /**
+     * Maps an `Option<T>` to `Option<U>` by applying a function to a contained value (if `Some`) or returns `None` (if `None`)
      *
-     * @return T The contained value
+     * @template U
      *
-     * @throws UnwrapNoneException When called on `None`
+     * @param  callable(T): U  $f
+     * @return Option<U>
+     */
+    public function map(callable $f): self
+    {
+        if ($this->isSome()) {
+            return static::Some($f($this->value));
+        }
+
+        return static::None();
+
+    }
+
+    /**
+     * Returns the provided default (if none), or applies a function to the contained value (if any).
+     *
+     * @template U
+     * @template V
+     *
+     * @param  V  $or
+     * @param  callable(T): U  $f
+     * @return U|V
+     */
+    public function mapOr(mixed $or, callable $f): mixed
+    {
+        if ($this->isSome()) {
+            return $f($this->unwrap());
+        }
+
+        return is_callable($or) ? $or() : $or;
+    }
+
+    /**
+     * Creates a `none` Option
+     *
+     * @return Option<never>
+     */
+    public static function None(): static
+    {
+        return new static(null, false);
+    }
+
+    /**
+     * Reduces two options into one, using the provided function if both are `Some`.
+     *
+     * If `$this` is `Some(s)` and `$other` is `Some(o)`, this method returns `Some($f(s,o))`.
+     * Otherwise, if only one of `$this` and `$other` is `Some`, that one is returned.
+     * If both `$this` and `$other` are `None`, `None` is returned.
+     *
+     * @template V
+     * @template U
+     *
+     * @param  Option<V>  $other
+     * @param  callable(T, V): U  $f
+     * @return Option<U|T|V>
+     */
+    public function reduce(self $other, callable $f): self
+    {
+        return match (true) {
+            $this->isSome() && $other->isSome() => static::Some($f($this->unwrap(), $other->unwrap())),
+            $this->isSome() => $this,
+            $other->isSome() => $other,
+            default => static::None(),
+        };
+    }
+
+    /**
+     * Creates a `some` Option
+     *
+     * @template T
+     *
+     * @param  T  $value
+     * @return Option<T>
+     */
+    public static function Some(mixed $value = true): static
+    {
+        if ($value === null) {
+            return static::None();
+        }
+
+        return new static($value, true);
+    }
+
+    /**
+     * Returns the contained `Some` value or throws UnwrapNoneException
+     *
+     * @return T
+     *
+     * @throws UnwrapNoneException
      */
     public function unwrap(): mixed
     {
@@ -165,108 +239,5 @@ class Option
         }
 
         return is_callable($or) ? $or() : $or;
-    }
-
-    /**
-     * Calls `fn` on contained value if `some`, returns `none` if `none`
-     *
-     * @template U
-     *
-     * @param  callable(T): U  $fn  Function to transform the value
-     * @return Option<U>
-     */
-    public function map(callable $fn): self
-    {
-        if ($this->isNone()) {
-            return self::None();
-        }
-
-        return self::Some($fn($this->value));
-    }
-
-    /**
-     * Calls `fn` on a contained value if `some`, or returns $or if `none`
-     *
-     * @template V $or
-     * @template U
-     *
-     * @param  callable(T): U  $fn  Function to transform the value
-     * @return V|U
-     */
-    public function mapOr(mixed $or, callable $fn): mixed
-    {
-        return match (true) {
-            $this->isSome() => $fn($this->unwrap()),
-            $this->isNone() => is_callable($or) ? $or() : $or,
-        };
-    }
-
-    /*
-    * Reduces to options into one, using the provided function if both are `some`
-    *
-    * @template U
-    * @template R
-    * @param Option<U> $other
-    * @param callable(T, U): R $fn
-    * @return Option<T|U|R>
-    */
-    public function reduce(self $other, callable $fn): self
-    {
-        return match (true) {
-            $this->isSome() && $other->isSome() => self::Some($fn($this->unwrap(), $other->unwrap())),
-            $this->isSome() => $this,
-            $other->isSome() => $other,
-            default => self::None(),
-        };
-    }
-
-    /*
-    * Replaces the actual value in the option by the value given in the parameter, returning the old value if present
-    *
-    * @template NT
-    *
-    * @return Option<T>
-    */
-    public function replace(mixed $value): self
-    {
-        $old = clone $this;
-        if ($this->isNone() && $value !== null) {
-            $this->isSome = true;
-        }
-        $this->value = $value;
-
-        return $old;
-    }
-
-    /*
-    * Takes the value out of the option, leaving a `None` in its place
-    *
-    * return Option<T>
-    */
-    public function take(): self
-    {
-        $old = clone $this;
-        $this->value = null;
-        $this->isSome = false;
-
-        return $old;
-    }
-
-    /*
-     * Takes the value out of the option, but only if the predicate evaluates to `true`.
-     *
-     * @param  callable(T): bool  $predicate
-    *  @return Option<T>
-    */
-    public function takeIf(callable $predicate): Option
-    {
-        if ($this->isNone()) {
-            return self::None();
-        }
-        if ($predicate($this->value)) {
-            return $this->take();
-        }
-
-        return self::None();
     }
 }
