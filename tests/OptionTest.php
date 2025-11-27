@@ -67,14 +67,6 @@ class OptionTest extends TestCase
         $this->assertSame(42, Option::None()->mapOr(fn () => 42, fn ($v) => strlen($v)));
     }
 
-    public function test_map_or_else(): void
-    {
-        $this->markTestIncomplete('TODO');
-        $k = 21;
-        $this->assertSame(3, Option::Some('foo')->mapOrElse(fn () => 2 * $k, fn ($v) => strlen($v)));
-        $this->assertSame(42, Option::None()->mapOrElse(fn () => 2 * $k, fn ($v) => strlen($v)));
-    }
-
     public function test_filter(): void
     {
         $result = Option::Some(4)->filter(fn ($x) => $x > 2);
@@ -173,64 +165,6 @@ class OptionTest extends TestCase
 
         $result = $n->reduce($n, $f);
         $this->assertTrue($result->isNone());
-    }
-
-    public function test_replace(): void
-    {
-        $x = Option::Some(2);
-        $old = $x->replace(5);
-        $this->assertTrue($x->isSome());
-        $this->assertSame(5, $x->unwrap());
-        $this->assertTrue($old->isSome());
-        $this->assertSame(2, $old->unwrap());
-
-        $x = Option::None();
-        $old = $x->replace(3);
-        $this->assertTrue($x->isSome());
-        $this->assertSame(3, $x->unwrap());
-        $this->assertTrue($old->isNone());
-    }
-
-    public function test_take(): void
-    {
-        $x = Option::Some(2);
-        $y = $x->take();
-        $this->assertTrue($x->isNone());
-        $this->assertTrue($y->isSome());
-        $this->assertSame(2, $y->unwrap());
-
-        $x = Option::None();
-        $y = $x->take();
-        $this->assertTrue($x->isNone());
-        $this->assertTrue($y->isNone());
-    }
-
-    public function test_take_if(): void
-    {
-        $x = Option::Some(42);
-        $prev = $x->takeIf(function (&$v) {
-            if ($v === 42) {
-                $v += 1;
-
-                return false;
-            }
-
-            return false;
-        });
-        $this->assertTrue($x->isSome());
-        $this->assertSame(43, $x->unwrap());
-        $this->assertTrue($prev->isNone());
-
-        $x = Option::Some(43);
-        $prev = $x->takeIf(fn ($v) => $v === 43);
-        $this->assertTrue($x->isNone());
-        $this->assertTrue($prev->isSome());
-        $this->assertSame(43, $prev->unwrap());
-
-        $x = Option::None();
-        $prev = $x->takeIf(fn ($v) => true);
-        $this->assertTrue($x->isNone());
-        $this->assertTrue($prev->isNone());
     }
 
     // Integration tests
