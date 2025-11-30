@@ -59,9 +59,6 @@ You can view [the generated documentation](https://github.com/knightspore/option
 
 ## Road Map
 
-- Option
-    - [ ] TODO
-        - [ ] `or()`
 - Result
     - [ ] TODO
         - [ ] `inspect()`

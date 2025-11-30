@@ -142,11 +142,12 @@ class Option
 
     /**
      * Returns the provided default (if none), or applies a function to the contained value (if any).
+     * If `or` is callable, it will be invoked to get the default value.
      *
      * @template U
      * @template V
      *
-     * @param  V  $or
+     * @param  V|callable():V  $or
      * @param  callable(T): U  $f
      * @return U|V
      */
@@ -167,6 +168,22 @@ class Option
     public static function None(): static
     {
         return new static(null, false);
+    }
+
+    /**
+     * Returns the option if it contains a value, otherwise returns `optb`.
+     * If `optb` is callable, it will be invoked to get the alternative option.
+     *
+     * @param  Option<T>|callable():Option<T>  $optb
+     * @return Option<T>
+     */
+    public function or(mixed $optb): self
+    {
+        if ($this->isNone()) {
+            return is_callable($optb) ? $optb() : $optb;
+        }
+
+        return static::Some($this->unwrap());
     }
 
     /**
@@ -228,8 +245,9 @@ class Option
 
     /**
      * Returns the contained `some` value or a provided default.
+     * If `or` is callable, it will be invoked to get the default value.
      *
-     * @param  V  $or
+     * @param  V|callable():V  $or
      * @return T|V
      */
     public function unwrapOr(mixed $or): mixed

@@ -117,6 +117,34 @@ class OptionTest extends TestCase
         $this->assertTrue($result->isNone());
     }
 
+    public function test_or(): void
+    {
+        $x = Option::Some(2);
+        $y = Option::None();
+        $this->assertSame(2, $x->or($y)->unwrap());
+
+        $x = Option::None();
+        $y = Option::Some(100);
+        $this->assertSame(100, $x->or($y)->unwrap());
+
+        $x = Option::Some(2);
+        $y = Option::Some(100);
+        $this->assertSame(2, $x->or($y)->unwrap());
+
+        $x = Option::None();
+        $y = Option::None();
+        $this->assertTrue($x->or($y)->isNone());
+    }
+
+    public function test_or_callable(): void
+    {
+        $nobody = fn () => Option::None();
+        $vikings = fn () => Option::Some('vikings');
+        $this->assertSame('barbarians', Option::Some('barbarians')->or($vikings)->unwrap());
+        $this->assertSame('vikings', Option::None()->or($vikings)->unwrap());
+        $this->assertTrue(Option::None()->or($nobody)->isNone());
+    }
+
     public function test_inspect(): void
     {
         $inspected = null;

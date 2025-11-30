@@ -169,15 +169,17 @@ public map(callable $f): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResul
 Returns the provided default (if none), or applies a function to the contained value (if any).
 
 ```php
-public mapOr(\Ciarancoza\OptionResult\V $or, callable $f): \Ciarancoza\OptionResult\U|\Ciarancoza\OptionResult\V
+public mapOr(\Ciarancoza\OptionResult\V|callable $or, callable $f): \Ciarancoza\OptionResult\U|\Ciarancoza\OptionResult\V
 ```
+
+If `or` is callable, it will be invoked to get the default value.
 
 **Parameters:**
 
-| Parameter | Type                           | Description |
-|-----------|--------------------------------|-------------|
-| `$or`     | **\Ciarancoza\OptionResult\V** |             |
-| `$f`      | **callable**                   |             |
+| Parameter | Type                                     | Description |
+|-----------|------------------------------------------|-------------|
+| `$or`     | **\Ciarancoza\OptionResult\V\|callable** |             |
+| `$f`      | **callable**                             |             |
 
 ***
 
@@ -190,6 +192,24 @@ public static None(): \Ciarancoza\OptionResult\Option<never>
 ```
 
 * This method is **static**.
+***
+
+### or
+
+Returns the option if it contains a value, otherwise returns `optb`.
+
+```php
+public or(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>|callable $optb): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>
+```
+
+If `optb` is callable, it will be invoked to get the alternative option.
+
+**Parameters:**
+
+| Parameter | Type                                                                      | Description |
+|-----------|---------------------------------------------------------------------------|-------------|
+| `$optb`   | **\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>\|callable** |             |
+
 ***
 
 ### reduce
@@ -249,13 +269,15 @@ public unwrap(): \Ciarancoza\OptionResult\T
 Returns the contained `some` value or a provided default.
 
 ```php
-public unwrapOr(\Ciarancoza\OptionResult\V $or): \Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\V
+public unwrapOr(\Ciarancoza\OptionResult\V|callable $or): \Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\V
 ```
+
+If `or` is callable, it will be invoked to get the default value.
 
 **Parameters:**
 
-| Parameter | Type                           | Description |
-|-----------|--------------------------------|-------------|
-| `$or`     | **\Ciarancoza\OptionResult\V** |             |
+| Parameter | Type                                     | Description |
+|-----------|------------------------------------------|-------------|
+| `$or`     | **\Ciarancoza\OptionResult\V\|callable** |             |
 
 ***
