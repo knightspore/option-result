@@ -65,6 +65,7 @@ class ResultTest extends TestCase
         } catch (UnwrapErrException $e) {
             $this->assertSame('rate limited', $e->value);
             $this->assertNull($e->getPrevious());
+            $this->assertStringEndsWith('on `Err` value: rate limited', $e->getMessage());
         }
 
         $cause = new \RuntimeException('boom');
@@ -74,6 +75,7 @@ class ResultTest extends TestCase
         } catch (UnwrapErrException $e) {
             $this->assertSame($cause, $e->value);
             $this->assertSame($cause, $e->getPrevious());
+            $this->assertStringEndsWith(': boom', $e->getMessage());
         }
 
         try {
@@ -89,6 +91,7 @@ class ResultTest extends TestCase
             $this->fail('Expected UnwrapOkException');
         } catch (UnwrapOkException $e) {
             $this->assertSame(42, $e->value);
+            $this->assertStringEndsWith('on `Ok` value: 42', $e->getMessage());
         }
     }
 
