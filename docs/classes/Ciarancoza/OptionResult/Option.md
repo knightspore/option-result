@@ -194,6 +194,24 @@ public static None(): \Ciarancoza\OptionResult\Option<never>
 * This method is **static**.
 ***
 
+### okOr
+
+Transforms the `Option<T>` into a `Result<T, E>`, mapping `Some(v)` to `Ok(v)` and `None` to `Err($err)`.
+
+```php
+public okOr(\Ciarancoza\OptionResult\E|callable $err): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\E>
+```
+
+If `$err` is callable, it will be invoked to get the error value.
+
+**Parameters:**
+
+| Parameter | Type                                     | Description |
+|-----------|------------------------------------------|-------------|
+| `$err`    | **\Ciarancoza\OptionResult\E\|callable** |             |
+
+***
+
 ### or
 
 Returns the option if it contains a value, otherwise returns `optb`.

@@ -171,6 +171,24 @@ class Option
     }
 
     /**
+     * Transforms the `Option<T>` into a `Result<T, E>`, mapping `Some(v)` to `Ok(v)` and `None` to `Err($err)`.
+     * If `$err` is callable, it will be invoked to get the error value.
+     *
+     * @template E
+     *
+     * @param  E|callable():E  $err
+     * @return Result<T,E>
+     */
+    public function okOr(mixed $err): Result
+    {
+        if ($this->isSome()) {
+            return Result::Ok($this->unwrap());
+        }
+
+        return Result::Err(is_callable($err) ? $err() : $err);
+    }
+
+    /**
      * Returns the option if it contains a value, otherwise returns `optb`.
      * If `optb` is callable, it will be invoked to get the alternative option.
      *
@@ -246,6 +264,8 @@ class Option
     /**
      * Returns the contained `some` value or a provided default.
      * If `or` is callable, it will be invoked to get the default value.
+     *
+     * @template V
      *
      * @param  V|callable():V  $or
      * @return T|V

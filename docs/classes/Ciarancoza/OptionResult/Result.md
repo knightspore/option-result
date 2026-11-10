@@ -1,5 +1,5 @@
 
-Result<T, E> represents a success (`ok`) or an error (`err`)
+Result<T, E> represents a success (`Ok`) or an error (`Err`)
 
 ***
 
@@ -10,7 +10,7 @@ Result<T, E> represents a success (`ok`) or an error (`err`)
 ### value
 
 ```php
-protected mixed $value
+private mixed $value
 ```
 
 ***
@@ -18,117 +18,80 @@ protected mixed $value
 ### isOk
 
 ```php
-protected bool $isOk
+private bool $isOk
 ```
 
 ***
 
 ## Methods
 
-### Ok
-
-Creates an `ok` result
-
-```php
-public static Ok(\Ciarancoza\OptionResult\T $value = true): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,never>
-```
-
-* This method is **static**.
-**Parameters:**
-
-| Parameter | Type                           | Description |
-|-----------|--------------------------------|-------------|
-| `$value`  | **\Ciarancoza\OptionResult\T** |             |
-
-***
-
-### Err
-
-Creates an `err` result
-
-```php
-public static Err(\Ciarancoza\OptionResult\E $value): \Ciarancoza\OptionResult\Result<never,\Ciarancoza\OptionResult\E>
-```
-
-* This method is **static**.
-**Parameters:**
-
-| Parameter | Type                           | Description |
-|-----------|--------------------------------|-------------|
-| `$value`  | **\Ciarancoza\OptionResult\E** |             |
-
-***
-
 ### __construct
 
 ```php
-private __construct(\Ciarancoza\OptionResult\T $value, bool $isOk): mixed
+private __construct(\Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\E $value, bool $isOk): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type                           | Description |
-|-----------|--------------------------------|-------------|
-| `$value`  | **\Ciarancoza\OptionResult\T** |             |
-| `$isOk`   | **bool**                       |             |
-
-***
-
-### isOk
-
-Returns `true` if the result is an `ok` result.
-
-```php
-public isOk(): bool
-```
-
-***
-
-### isErr
-
-Returns `true` if the result is an `err` result.
-
-```php
-public isErr(): bool
-```
+| Parameter | Type                                                       | Description |
+|-----------|------------------------------------------------------------|-------------|
+| `$value`  | **\Ciarancoza\OptionResult\T\|\Ciarancoza\OptionResult\E** |             |
+| `$isOk`   | **bool**                                                   |             |
 
 ***
 
 ### and
 
-Returns `$and` if `ok`, otherwise returns the current `err`
+Returns `$res` if the result is `Ok`, otherwise returns the `Err` value of `$this`
 
 ```php
-public and(\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\V,\Ciarancoza\OptionResult\E> $and): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\V,\Ciarancoza\OptionResult\E>
+public and(\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\E> $res): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\E>
 ```
 
 **Parameters:**
 
 | Parameter | Type                                                                                       | Description |
 |-----------|--------------------------------------------------------------------------------------------|-------------|
-| `$and`    | **\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\V,\Ciarancoza\OptionResult\E>** |             |
+| `$res`    | **\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\E>** |             |
 
 ***
 
 ### andThen
 
-Calls `$then` on contained value if `ok`, otherwise returns the current `err`
+Calls `$f` if the result is `Ok`, otherwise returns the `Err` value of `$this`
 
 ```php
-public andThen(callable $then): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\E>
+public andThen(callable $f): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\E>
 ```
 
 **Parameters:**
 
-| Parameter | Type         | Description                     |
-|-----------|--------------|---------------------------------|
-| `$then`   | **callable** | Function to transform the value |
+| Parameter | Type         | Description |
+|-----------|--------------|-------------|
+| `$f`      | **callable** |             |
+
+***
+
+### Err
+
+Creates an `Err` result
+
+```php
+public static Err(\Ciarancoza\OptionResult\F $value): \Ciarancoza\OptionResult\Result<never,\Ciarancoza\OptionResult\F>
+```
+
+* This method is **static**.
+**Parameters:**
+
+| Parameter | Type                           | Description |
+|-----------|--------------------------------|-------------|
+| `$value`  | **\Ciarancoza\OptionResult\F** |             |
 
 ***
 
 ### expect
 
-Throws UnwrapErrException with a custom message if `err`, otherwise returns the inner value
+Returns the contained `Ok` value, or throws UnwrapErrException if the value is an `Err` with a custom panic message provided by `$msg`.
 
 ```php
 public expect(string $msg): \Ciarancoza\OptionResult\T
@@ -148,7 +111,7 @@ public expect(string $msg): \Ciarancoza\OptionResult\T
 
 ### expectErr
 
-Throws UnwrapOkException with a custom message if `ok`, otherwise returns the inner error value
+Returns the contained `Err` value, or throws UnwrapOkException if the value is an `Ok` with a custom panic message provided by `$msg`.
 
 ```php
 public expectErr(string $msg): \Ciarancoza\OptionResult\E
@@ -166,19 +129,9 @@ public expectErr(string $msg): \Ciarancoza\OptionResult\E
 
 ***
 
-### getOk
-
-Returns `Some(T)` if `ok`, or `None` if `err`
-
-```php
-public getOk(): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>
-```
-
-***
-
 ### getErr
 
-Returns `Some(E)` if `err`, or `None` if `ok`
+Converts from `Result<T, E>` to `Option<E>`: `Some(E)` if `Err`, or `None` if `Ok`
 
 ```php
 public getErr(): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\E>
@@ -186,17 +139,197 @@ public getErr(): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\E>
 
 ***
 
+### getOk
+
+Converts from `Result<T, E>` to `Option<T>`: `Some(T)` if `Ok`, or `None` if `Err`
+
+```php
+public getOk(): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>
+```
+
+***
+
+### inspect
+
+Calls a function with a reference to the contained value if `Ok`
+
+```php
+public inspect(callable $f): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\E>
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description |
+|-----------|--------------|-------------|
+| `$f`      | **callable** |             |
+
+***
+
+### inspectErr
+
+Calls a function with a reference to the contained value if `Err`
+
+```php
+public inspectErr(callable $f): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\E>
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description |
+|-----------|--------------|-------------|
+| `$f`      | **callable** |             |
+
+***
+
+### isErr
+
+Returns `true` if the result is `Err`
+
+```php
+public isErr(): bool
+```
+
+***
+
+### isOk
+
+Returns `true` if the result is `Ok`
+
+```php
+public isOk(): bool
+```
+
+***
+
+### map
+
+Maps a `Result<T, E>` to `Result<U, E>` by applying a function to a contained `Ok` value, leaving an `Err` value untouched.
+
+```php
+public map(callable $f): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\E>
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description |
+|-----------|--------------|-------------|
+| `$f`      | **callable** |             |
+
+***
+
+### mapErr
+
+Maps a `Result<T, E>` to `Result<T, F>` by applying a function to a contained `Err` value, leaving an `Ok` value untouched.
+
+```php
+public mapErr(callable $f): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\F>
+```
+
+**Parameters:**
+
+| Parameter | Type         | Description |
+|-----------|--------------|-------------|
+| `$f`      | **callable** |             |
+
+***
+
+### mapOr
+
+Returns the provided default (if `Err`), or applies a function to the contained value (if `Ok`).
+
+```php
+public mapOr(\Ciarancoza\OptionResult\V|callable $default, callable $f): \Ciarancoza\OptionResult\U|\Ciarancoza\OptionResult\V
+```
+
+If `$default` is callable, it will be invoked to get the default value.
+
+**Parameters:**
+
+| Parameter  | Type                                     | Description |
+|------------|------------------------------------------|-------------|
+| `$default` | **\Ciarancoza\OptionResult\V\|callable** |             |
+| `$f`       | **callable**                             |             |
+
+***
+
+### mapOrElse
+
+Maps a `Result<T, E>` to `U` by applying fallback function `$default` to a contained `Err` value, or function `$f` to a contained `Ok` value.
+
+```php
+public mapOrElse(callable $default, callable $f): \Ciarancoza\OptionResult\U|\Ciarancoza\OptionResult\V
+```
+
+**Parameters:**
+
+| Parameter  | Type         | Description |
+|------------|--------------|-------------|
+| `$default` | **callable** |             |
+| `$f`       | **callable** |             |
+
+***
+
+### Ok
+
+Creates an `Ok` result
+
+```php
+public static Ok(\Ciarancoza\OptionResult\U $value = true): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,never>
+```
+
+* This method is **static**.
+**Parameters:**
+
+| Parameter | Type                           | Description |
+|-----------|--------------------------------|-------------|
+| `$value`  | **\Ciarancoza\OptionResult\U** |             |
+
+***
+
+### or
+
+Returns `$res` if the result is `Err`, otherwise returns the `Ok` value of `$this`.
+
+```php
+public or(\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\F>|callable $res): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\F>
+```
+
+If `$res` is callable, it will be invoked with the `Err` value to get the alternative result.
+
+**Parameters:**
+
+| Parameter | Type                                                                                                 | Description |
+|-----------|------------------------------------------------------------------------------------------------------|-------------|
+| `$res`    | **\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\F>\|callable** |             |
+
+***
+
+### tryCatch
+
+Calls `$try` and wraps its return value in `Ok`. If `$try` throws, the `Throwable` is passed to `$catch`
+and the return value is wrapped in `Err`. If no `$catch` is given, the `Throwable` itself becomes the `Err` value.
+
+```php
+public static tryCatch(callable $try, null|callable $catch = null): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\F|\Throwable>
+```
+
+* This method is **static**.
+**Parameters:**
+
+| Parameter | Type               | Description |
+|-----------|--------------------|-------------|
+| `$try`    | **callable**       |             |
+| `$catch`  | **null\|callable** |             |
+
+***
+
 ### unwrap
 
-Returns the contained value if `ok`, otherwise throws UnwrapErrException
+Returns the contained `Ok` value or throws UnwrapErrException
 
 ```php
 public unwrap(): \Ciarancoza\OptionResult\T
 ```
-
-**Return Value:**
-
-The contained value
 
 **Throws:**
 
@@ -206,15 +339,11 @@ The contained value
 
 ### unwrapErr
 
-Returns the contained value if `err`, otherwise throws UnwrapOkException
+Returns the contained `Err` value or throws UnwrapOkException
 
 ```php
 public unwrapErr(): \Ciarancoza\OptionResult\E
 ```
-
-**Return Value:**
-
-The contained error value
 
 **Throws:**
 
@@ -224,81 +353,34 @@ The contained error value
 
 ### unwrapOr
 
-Returns the contained `ok` value or a provided default.
+Returns the contained `Ok` value or a provided default.
 
 ```php
-public unwrapOr(\Ciarancoza\OptionResult\V $or): \Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\V
+public unwrapOr(\Ciarancoza\OptionResult\V|callable $default): \Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\V
 ```
+
+If `$default` is callable, it will be invoked to get the default value.
 
 **Parameters:**
 
-| Parameter | Type                           | Description |
-|-----------|--------------------------------|-------------|
-| `$or`     | **\Ciarancoza\OptionResult\V** |             |
+| Parameter  | Type                                     | Description |
+|------------|------------------------------------------|-------------|
+| `$default` | **\Ciarancoza\OptionResult\V\|callable** |             |
 
 ***
 
 ### unwrapOrElse
 
-Returns the contained `ok` value or computes from closure with error value
+Returns the contained `Ok` value or computes it from a closure that receives the `Err` value.
 
 ```php
-public unwrapOrElse(callable $fn): \Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\V
+public unwrapOrElse(callable $f): \Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\V
 ```
 
 **Parameters:**
 
 | Parameter | Type         | Description |
 |-----------|--------------|-------------|
-| `$fn`     | **callable** |             |
-
-***
-
-### map
-
-If `ok`, transform the value with `$fn`
-
-```php
-public map(callable $fn): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\E>
-```
-
-**Parameters:**
-
-| Parameter | Type         | Description                     |
-|-----------|--------------|---------------------------------|
-| `$fn`     | **callable** | Function to transform the value |
-
-***
-
-### mapOr
-
-Calls `fn` on a contained value if `ok`, or returns $or if `err`
-
-```php
-public mapOr(mixed $or, callable $fn): \Ciarancoza\OptionResult\V|\Ciarancoza\OptionResult\U
-```
-
-**Parameters:**
-
-| Parameter | Type         | Description                     |
-|-----------|--------------|---------------------------------|
-| `$or`     | **mixed**    |                                 |
-| `$fn`     | **callable** | Function to transform the value |
-
-***
-
-### mapErr
-
-If `err`, transform the error value with `$fn`
-
-```php
-public mapErr(callable $fn): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\U>
-```
-
-**Parameters:**
-
-| Parameter | Type         | Description                     |
-|-----------|--------------|---------------------------------|
-| `$fn`     | **callable** | Function to transform the value |
+| `$f`      | **callable** |             |
 
 ***

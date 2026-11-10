@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use Ciarancoza\OptionResult\Exceptions\UnwrapNoneException;
 use Ciarancoza\OptionResult\Option;
+use Ciarancoza\OptionResult\Result;
 use PHPUnit\Framework\TestCase;
 
 class OptionTest extends TestCase
@@ -143,6 +146,24 @@ class OptionTest extends TestCase
         $this->assertSame('barbarians', Option::Some('barbarians')->or($vikings)->unwrap());
         $this->assertSame('vikings', Option::None()->or($vikings)->unwrap());
         $this->assertTrue(Option::None()->or($nobody)->isNone());
+    }
+
+    public function test_ok_or(): void
+    {
+        $result = Option::Some('foo')->okOr(0);
+        $this->assertTrue($result->isOk());
+        $this->assertSame('foo', $result->unwrap());
+
+        $result = Option::None()->okOr(0);
+        $this->assertTrue($result->isErr());
+        $this->assertSame(0, $result->unwrapErr());
+
+        $this->assertSame('foo', Option::Some('foo')->okOr(fn () => 0)->unwrap());
+        $this->assertSame(0, Option::None()->okOr(fn () => 0)->unwrapErr());
+
+        // Round trip
+        $this->assertSame(1, Result::Ok(1)->getOk()->okOr('e')->unwrap());
+        $this->assertSame('e', Result::Err('x')->getOk()->okOr('e')->unwrapErr());
     }
 
     public function test_inspect(): void

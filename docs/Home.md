@@ -10,7 +10,7 @@ This is an automatically generated documentation for **Documentation**.
 | Class                                                | Description                                                  |
 |------------------------------------------------------|--------------------------------------------------------------|
 | [`Option`](./classes/Ciarancoza/OptionResult/Option) | Option<T> represents an optional value.                      |
-| [`Result`](./classes/Ciarancoza/OptionResult/Result) | Result<T, E> represents a success (`ok`) or an error (`err`) |
+| [`Result`](./classes/Ciarancoza/OptionResult/Result) | Result<T, E> represents a success (`Ok`) or an error (`Err`) |
 
 ### \Ciarancoza\OptionResult\Exceptions
 

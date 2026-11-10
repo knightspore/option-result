@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-require_once __DIR__.'/../vendor/autoload.php';
-
 use Ciarancoza\OptionResult\Exceptions\UnwrapErrException;
 use Ciarancoza\OptionResult\Exceptions\UnwrapOkException;
 use Ciarancoza\OptionResult\Result;
@@ -100,7 +98,6 @@ class ResultTest extends TestCase
 
     public function test_map_or_else(): void
     {
-        $this->markTestIncomplete('TODO');
         $this->assertSame(3, Result::Ok('foo')->mapOrElse(fn ($err) => strlen($err), fn ($v) => strlen($v)));
         $this->assertSame(3, Result::Err('bar')->mapOrElse(fn ($err) => strlen($err), fn ($v) => strlen($v)));
     }
@@ -177,7 +174,6 @@ class ResultTest extends TestCase
 
     public function test_try_catch(): void
     {
-        $this->markTestIncomplete('TODO');
         $result = Result::tryCatch(fn () => 'success', fn ($e) => 'Error: '.$e->getMessage());
         $this->assertTrue($result->isOk());
         $this->assertSame('success', $result->unwrap());
@@ -188,12 +184,20 @@ class ResultTest extends TestCase
         );
         $this->assertTrue($result->isErr());
         $this->assertSame('Error: something failed', $result->unwrapErr());
+
+        // Without a catcher the Throwable itself is the Err value
+        $result = Result::tryCatch(fn () => throw new RuntimeException('raw'));
+        $this->assertTrue($result->isErr());
+        $this->assertInstanceOf(RuntimeException::class, $result->unwrapErr());
+        $this->assertSame('raw', $result->unwrapErr()->getMessage());
+
+        // Error (not Exception) is also caught
+        $result = Result::tryCatch(fn () => intdiv(1, 0), fn (Throwable $e) => get_class($e));
+        $this->assertSame(DivisionByZeroError::class, $result->unwrapErr());
     }
 
     public function test_inspect(): void
     {
-        $this->markTestIncomplete('TODO');
-
         $inspected = null;
         $result = Result::Ok(4)->inspect(function ($x) use (&$inspected) {
             $inspected = $x;
@@ -215,8 +219,6 @@ class ResultTest extends TestCase
 
     public function test_inspect_err(): void
     {
-        $this->markTestIncomplete('TODO');
-
         $inspected = null;
         $result = Result::Err('error')->inspectErr(function ($e) use (&$inspected) {
             $inspected = $e;
@@ -238,8 +240,6 @@ class ResultTest extends TestCase
 
     public function test_or(): void
     {
-        $this->markTestIncomplete('TODO');
-
         $x = Result::Ok(2);
         $y = Result::Err('late error');
         $result = $x->or($y);
@@ -263,6 +263,17 @@ class ResultTest extends TestCase
         $result = $x->or($y);
         $this->assertTrue($result->isOk());
         $this->assertSame(2, $result->unwrap());
+    }
+
+    public function test_or_callable(): void
+    {
+        $sq = fn ($x) => Result::Ok($x * $x);
+        $err = fn ($x) => Result::Err($x);
+
+        $this->assertSame(2, Result::Ok(2)->or($sq)->or($sq)->unwrap());
+        $this->assertSame(2, Result::Ok(2)->or($err)->or($sq)->unwrap());
+        $this->assertSame(9, Result::Err(3)->or($sq)->or($err)->unwrap());
+        $this->assertSame(3, Result::Err(3)->or($err)->or($err)->unwrapErr());
     }
 
     // Integration tests
