@@ -84,6 +84,16 @@ $error  = fetchOrgData($id)->getErr();                   // Result<T, E>  -> Opt
 
 You can view [the generated documentation](https://github.com/knightspore/option-result/tree/main/docs) for more usage details.
 
+## Using with Laravel
+
+The package has no framework dependencies and works as-is. A few things to keep in mind, because Laravel's own control flow is exception-driven:
+
+- **`Err` is a value, not an exception.** `DB::transaction()` will commit and a queued job will be marked successful if your code returns `Err` without throwing. Unwrap or rethrow at the boundary where you want the framework to react, e.g. `->unwrapOrElse(fn ($e) => throw $e)`.
+- **`tryCatch` catches every `Throwable`**, including `TypeError` and `ValidationException`. Pass a `$catch` that maps the ones you own and rethrows the rest, or scope the closure tightly.
+- **`Option::Some(null)` is `None`.** Mapping onto a nullable column (`->map(fn ($u) => $u->theme)`) will turn `Some` into `None` mid-chain. That is usually what you want; if not, map to a sentinel first.
+- **Name collisions.** `vlucas/phpdotenv` ships `PhpOption\Option` and `GrahamCampbell\ResultType\Result`, so IDE auto-import may offer the wrong class. Alias on import if both are in scope.
+- **Not serialisable by design.** Neither class implements `JsonSerializable`; unwrap before returning from a controller or putting a value in a job payload or cache.
+
 ## Implemented Methods
 
 | Option | Result |
