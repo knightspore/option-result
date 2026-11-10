@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.2.5
+- CI installs a PHP-version-specific dependency set on 8.1 through 8.3 instead of the 8.4 lock file, which pinned PHPUnit 12 (PHP >= 8.3) and Pint 1.25 (PHP >= 8.2). PHPUnit now allows `^10.5 || ^11.0 || ^12.0`, Pint `^1.13`.
+
 ## v1.2.4
 - `UnwrapErrException` and `UnwrapOkException` append scalar, `Stringable` and `Throwable` values to the default message, so the reason shows in logs and error trackers without inspecting `->value`.
 

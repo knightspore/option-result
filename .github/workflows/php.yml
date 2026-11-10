@@ -40,8 +40,17 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php-version }}-
 
-    - name: Install dependencies
+    # The lock file targets PHP 8.4. Older versions resolve their own compatible
+    # set, without the docs generator, whose dependency tree needs PHP >= 8.2.
+    - name: Install dependencies (lock file)
+      if: matrix.php-version == '8.4'
       run: composer install --prefer-dist --no-progress
+
+    - name: Install dependencies (resolve for this PHP version)
+      if: matrix.php-version != '8.4'
+      run: |
+        composer remove --dev --no-update --no-interaction phpdocumentor/phpdocumentor saggre/phpdocumentor-markdown
+        composer update --prefer-dist --no-progress --no-interaction
 
     - name: Run Tests
       run: composer test
@@ -50,7 +59,16 @@ jobs:
       run: composer analyse
 
     - name: Lint Codebase
+      if: matrix.php-version == '8.4'
       run: composer lint
+
+    - name: Lint Codebase (check only)
+      if: matrix.php-version != '8.4'
+      run: composer lint -- --test
+
+    - name: Restore composer files
+      if: matrix.php-version != '8.4'
+      run: git checkout -- composer.json composer.lock
 
     - name: Commit Changes
       if: matrix.php-version == '8.4'
