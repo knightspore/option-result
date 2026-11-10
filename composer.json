@@ -28,8 +28,5 @@
         "lint": "./vendor/bin/pint",
         "docs": "./vendor/bin/phpdoc run -d $(pwd)/src -t $(pwd)/docs --template='vendor/saggre/phpdocumentor-markdown/themes/markdown'",
         "release": "composer lint && composer test && composer docs"
-    },
-    "extra": {
-        "dummy": null
     }
 }
