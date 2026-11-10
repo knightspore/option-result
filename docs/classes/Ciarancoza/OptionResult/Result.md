@@ -325,11 +325,13 @@ public static tryCatch(callable $try, null|callable $catch = null): \Ciarancoza\
 
 ### unwrap
 
-Returns the contained `Ok` value or throws UnwrapErrException
+Returns the contained `Ok` value or throws UnwrapErrException.
 
 ```php
 public unwrap(): \Ciarancoza\OptionResult\T
 ```
+
+The exception carries the `Err` value as `->value`; if that value is a `Throwable` it is also chained as the previous exception.
 
 **Throws:**
 
@@ -339,7 +341,7 @@ public unwrap(): \Ciarancoza\OptionResult\T
 
 ### unwrapErr
 
-Returns the contained `Err` value or throws UnwrapOkException
+Returns the contained `Err` value or throws UnwrapOkException. The exception carries the `Ok` value as `->value`.
 
 ```php
 public unwrapErr(): \Ciarancoza\OptionResult\E

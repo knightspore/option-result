@@ -81,7 +81,7 @@ class Result
     public function expect(string $msg): mixed
     {
         if ($this->isErr()) {
-            throw new UnwrapErrException($msg);
+            throw new UnwrapErrException($msg, $this->value);
         }
 
         return $this->unwrap();
@@ -97,7 +97,7 @@ class Result
     public function expectErr(string $msg): mixed
     {
         if ($this->isOk()) {
-            throw new UnwrapOkException($msg);
+            throw new UnwrapOkException($msg, $this->value);
         }
 
         return $this->unwrapErr();
@@ -302,7 +302,8 @@ class Result
     }
 
     /**
-     * Returns the contained `Ok` value or throws UnwrapErrException
+     * Returns the contained `Ok` value or throws UnwrapErrException.
+     * The exception carries the `Err` value as `->value`; if that value is a `Throwable` it is also chained as the previous exception.
      *
      * @return T
      *
@@ -311,14 +312,14 @@ class Result
     public function unwrap(): mixed
     {
         if ($this->isErr()) {
-            throw new UnwrapErrException;
+            throw new UnwrapErrException(value: $this->value);
         }
 
         return $this->value;
     }
 
     /**
-     * Returns the contained `Err` value or throws UnwrapOkException
+     * Returns the contained `Err` value or throws UnwrapOkException. The exception carries the `Ok` value as `->value`.
      *
      * @return E
      *
@@ -327,7 +328,7 @@ class Result
     public function unwrapErr(): mixed
     {
         if ($this->isOk()) {
-            throw new UnwrapOkException;
+            throw new UnwrapOkException(value: $this->value);
         }
 
         return $this->value;

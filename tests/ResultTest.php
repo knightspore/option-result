@@ -57,6 +57,41 @@ class ResultTest extends TestCase
         $this->assertSame($default, Result::Err('error')->unwrapOr(fn () => $default));
     }
 
+    public function test_unwrap_exception_carries_err_value_and_chains_throwable(): void
+    {
+        try {
+            Result::Err('rate limited')->unwrap();
+            $this->fail('Expected UnwrapErrException');
+        } catch (UnwrapErrException $e) {
+            $this->assertSame('rate limited', $e->value);
+            $this->assertNull($e->getPrevious());
+        }
+
+        $cause = new \RuntimeException('boom');
+        try {
+            Result::tryCatch(fn () => throw $cause)->unwrap();
+            $this->fail('Expected UnwrapErrException');
+        } catch (UnwrapErrException $e) {
+            $this->assertSame($cause, $e->value);
+            $this->assertSame($cause, $e->getPrevious());
+        }
+
+        try {
+            Result::Err($cause)->expect('custom message');
+            $this->fail('Expected UnwrapErrException');
+        } catch (UnwrapErrException $e) {
+            $this->assertSame('custom message', $e->getMessage());
+            $this->assertSame($cause, $e->getPrevious());
+        }
+
+        try {
+            Result::Ok(42)->unwrapErr();
+            $this->fail('Expected UnwrapOkException');
+        } catch (UnwrapOkException $e) {
+            $this->assertSame(42, $e->value);
+        }
+    }
+
     public function test_only_closures_are_lazy_defaults(): void
     {
         $this->assertSame('phpversion', Result::Err('e')->unwrapOr('phpversion'));
