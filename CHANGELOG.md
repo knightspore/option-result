@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.2.6
+- CI lints only on the 8.4 job with the pinned Pint; newer Pint releases resolved on 8.2 and 8.3 rejected two leading backslashes and failed those jobs.
+
 ## v1.2.5
 - CI installs a PHP-version-specific dependency set on 8.1 through 8.3 instead of the 8.4 lock file, which pinned PHPUnit 12 (PHP >= 8.3) and Pint 1.25 (PHP >= 8.2). PHPUnit now allows `^10.5 || ^11.0 || ^12.0`, Pint `^1.13`.
 

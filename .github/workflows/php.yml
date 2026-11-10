@@ -58,13 +58,10 @@ jobs:
     - name: Static Analysis
       run: composer analyse
 
+    # Formatting does not depend on the PHP version; lint once with the pinned Pint.
     - name: Lint Codebase
       if: matrix.php-version == '8.4'
       run: composer lint
-
-    - name: Lint Codebase (check only)
-      if: matrix.php-version != '8.4'
-      run: composer lint -- --test
 
     - name: Restore composer files
       if: matrix.php-version != '8.4'

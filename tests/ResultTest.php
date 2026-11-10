@@ -68,7 +68,7 @@ class ResultTest extends TestCase
             $this->assertStringEndsWith('on `Err` value: rate limited', $e->getMessage());
         }
 
-        $cause = new \RuntimeException('boom');
+        $cause = new RuntimeException('boom');
         try {
             Result::tryCatch(fn () => throw $cause)->unwrap();
             $this->fail('Expected UnwrapErrException');

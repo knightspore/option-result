@@ -23,7 +23,7 @@ class UnwrapErrException extends \RuntimeException
      */
     private static function describe(mixed $value): string
     {
-        if ($value instanceof \Throwable) {
+        if ($value instanceof Throwable) {
             return ': '.$value->getMessage();
         }
 
