@@ -10,7 +10,7 @@ This library contains two classes: `Option` and `Result`.
 
 Both are ported from the Rust standard library, with a few deliberate changes for PHP:
 
-- Wherever Rust has an eager method and a lazy `*Else` twin that takes a zero-argument closure (`unwrap_or` / `unwrap_or_else`, `or` / `or_else`, `ok_or` / `ok_or_else`), there is a single method that accepts either a plain value or a callable.
+- Wherever Rust has an eager method and a lazy `*Else` twin that takes a zero-argument closure (`unwrap_or` / `unwrap_or_else`, `or` / `or_else`, `ok_or` / `ok_or_else`), there is a single method that accepts either a plain value or a `Closure`. Only `Closure` instances are treated as lazy: strings, `[Class, 'method']` arrays and invokable objects are returned as-is, so a default that happens to name a function is never called.
 - Where the lazy twin's closure receives the error (`Result::unwrap_or_else`, `Result::map_or_else`), it is kept as a separate method so the error is available.
 - `Option::Some(null)` is `None`. `Result::Ok(null)` is still `Ok`.
 - In-place mutators (`take`, `replace`, `insert`, …) are not ported. PHP objects are shared references, so mutating one in place is a footgun.

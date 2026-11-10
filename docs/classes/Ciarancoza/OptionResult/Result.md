@@ -241,7 +241,7 @@ Returns the provided default (if `Err`), or applies a function to the contained 
 public mapOr(\Ciarancoza\OptionResult\V|callable $default, callable $f): \Ciarancoza\OptionResult\U|\Ciarancoza\OptionResult\V
 ```
 
-If `$default` is callable, it will be invoked to get the default value.
+If `$default` is a Closure, it will be invoked to get the default value.
 
 **Parameters:**
 
@@ -294,7 +294,7 @@ Returns `$res` if the result is `Err`, otherwise returns the `Ok` value of `$thi
 public or(\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\F>|callable $res): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\F>
 ```
 
-If `$res` is callable, it will be invoked with the `Err` value to get the alternative result.
+If `$res` is a Closure, it will be invoked with the `Err` value to get the alternative result.
 
 **Parameters:**
 
@@ -359,7 +359,7 @@ Returns the contained `Ok` value or a provided default.
 public unwrapOr(\Ciarancoza\OptionResult\V|callable $default): \Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\V
 ```
 
-If `$default` is callable, it will be invoked to get the default value.
+If `$default` is a Closure, it will be invoked to get the default value.
 
 **Parameters:**
 

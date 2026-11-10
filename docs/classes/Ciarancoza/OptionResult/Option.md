@@ -202,7 +202,7 @@ Transforms the `Option<T>` into a `Result<T, E>`, mapping `Some(v)` to `Ok(v)` a
 public okOr(\Ciarancoza\OptionResult\E|callable $err): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\E>
 ```
 
-If `$err` is callable, it will be invoked to get the error value.
+If `$err` is a Closure, it will be invoked to get the error value.
 
 **Parameters:**
 
@@ -220,7 +220,7 @@ Returns the option if it contains a value, otherwise returns `optb`.
 public or(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>|callable $optb): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>
 ```
 
-If `optb` is callable, it will be invoked to get the alternative option.
+If `optb` is a Closure, it will be invoked to get the alternative option.
 
 **Parameters:**
 

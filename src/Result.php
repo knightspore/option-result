@@ -213,12 +213,12 @@ class Result
 
     /**
      * Returns the provided default (if `Err`), or applies a function to the contained value (if `Ok`).
-     * If `$default` is callable, it will be invoked to get the default value.
+     * If `$default` is a Closure, it will be invoked to get the default value.
      *
      * @template U
      * @template V
      *
-     * @param  V|callable():V  $default
+     * @param  V|\Closure():V  $default
      * @param  callable(T): U  $f
      * @return U|V
      */
@@ -228,7 +228,7 @@ class Result
             return $f($this->unwrap());
         }
 
-        return is_callable($default) ? $default() : $default;
+        return $default instanceof \Closure ? $default() : $default;
     }
 
     /**
@@ -265,17 +265,17 @@ class Result
 
     /**
      * Returns `$res` if the result is `Err`, otherwise returns the `Ok` value of `$this`.
-     * If `$res` is callable, it will be invoked with the `Err` value to get the alternative result.
+     * If `$res` is a Closure, it will be invoked with the `Err` value to get the alternative result.
      *
      * @template F
      *
-     * @param  Result<T,F>|callable(E): Result<T,F>  $res
+     * @param  Result<T,F>|\Closure(E): Result<T,F>  $res
      * @return Result<T,F>
      */
     public function or(mixed $res): self
     {
         if ($this->isErr()) {
-            return is_callable($res) ? $res($this->unwrapErr()) : $res;
+            return $res instanceof \Closure ? $res($this->unwrapErr()) : $res;
         }
 
         return $this;
@@ -335,11 +335,11 @@ class Result
 
     /**
      * Returns the contained `Ok` value or a provided default.
-     * If `$default` is callable, it will be invoked to get the default value.
+     * If `$default` is a Closure, it will be invoked to get the default value.
      *
      * @template V
      *
-     * @param  V|callable():V  $default
+     * @param  V|\Closure():V  $default
      * @return T|V
      */
     public function unwrapOr(mixed $default): mixed
@@ -348,7 +348,7 @@ class Result
             return $this->unwrap();
         }
 
-        return is_callable($default) ? $default() : $default;
+        return $default instanceof \Closure ? $default() : $default;
     }
 
     /**

@@ -51,6 +51,28 @@ class OptionTest extends TestCase
         $this->assertSame(42, Option::None()->unwrapOr(fn () => 2 * $k));
     }
 
+    public function test_only_closures_are_lazy_defaults(): void
+    {
+        // Strings, array callables and invokable objects are values, not lazy defaults
+        $this->assertSame('phpversion', Option::None()->unwrapOr('phpversion'));
+        $this->assertSame([self::class, 'setUpBeforeClass'], Option::None()->unwrapOr([self::class, 'setUpBeforeClass']));
+        $invokable = new class
+        {
+            public function __invoke(): string
+            {
+                return 'invoked';
+            }
+        };
+        $this->assertSame($invokable, Option::None()->unwrapOr($invokable));
+        $this->assertSame($invokable, Option::None()->mapOr($invokable, fn ($v) => $v));
+        $this->assertSame('phpversion', Option::None()->okOr('phpversion')->unwrapErr());
+        $this->assertSame($invokable, Option::None()->okOr($invokable)->unwrapErr());
+
+        // First-class callable syntax produces a Closure and stays lazy
+        $this->assertSame(3, Option::None()->unwrapOr(fn () => strlen('abc')));
+        $this->assertSame(PHP_VERSION, Option::None()->unwrapOr(phpversion(...)));
+    }
+
     public function test_map(): void
     {
         $result = Option::Some('Hello World')->map(fn ($s) => strlen($s));

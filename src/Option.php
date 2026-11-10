@@ -147,7 +147,7 @@ class Option
      * @template U
      * @template V
      *
-     * @param  V|callable():V  $or
+     * @param  V|\Closure():V  $or
      * @param  callable(T): U  $f
      * @return U|V
      */
@@ -157,7 +157,7 @@ class Option
             return $f($this->unwrap());
         }
 
-        return is_callable($or) ? $or() : $or;
+        return $or instanceof \Closure ? $or() : $or;
     }
 
     /**
@@ -172,11 +172,11 @@ class Option
 
     /**
      * Transforms the `Option<T>` into a `Result<T, E>`, mapping `Some(v)` to `Ok(v)` and `None` to `Err($err)`.
-     * If `$err` is callable, it will be invoked to get the error value.
+     * If `$err` is a Closure, it will be invoked to get the error value.
      *
      * @template E
      *
-     * @param  E|callable():E  $err
+     * @param  E|\Closure():E  $err
      * @return Result<T,E>
      */
     public function okOr(mixed $err): Result
@@ -185,20 +185,20 @@ class Option
             return Result::Ok($this->unwrap());
         }
 
-        return Result::Err(is_callable($err) ? $err() : $err);
+        return Result::Err($err instanceof \Closure ? $err() : $err);
     }
 
     /**
      * Returns the option if it contains a value, otherwise returns `optb`.
-     * If `optb` is callable, it will be invoked to get the alternative option.
+     * If `optb` is a Closure, it will be invoked to get the alternative option.
      *
-     * @param  Option<T>|callable():Option<T>  $optb
+     * @param  Option<T>|\Closure():Option<T>  $optb
      * @return Option<T>
      */
     public function or(mixed $optb): self
     {
         if ($this->isNone()) {
-            return is_callable($optb) ? $optb() : $optb;
+            return $optb instanceof \Closure ? $optb() : $optb;
         }
 
         return static::Some($this->unwrap());
@@ -267,7 +267,7 @@ class Option
      *
      * @template V
      *
-     * @param  V|callable():V  $or
+     * @param  V|\Closure():V  $or
      * @return T|V
      */
     public function unwrapOr(mixed $or): mixed
@@ -276,6 +276,6 @@ class Option
             return $this->unwrap();
         }
 
-        return is_callable($or) ? $or() : $or;
+        return $or instanceof \Closure ? $or() : $or;
     }
 }

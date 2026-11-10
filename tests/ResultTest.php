@@ -57,6 +57,24 @@ class ResultTest extends TestCase
         $this->assertSame($default, Result::Err('error')->unwrapOr(fn () => $default));
     }
 
+    public function test_only_closures_are_lazy_defaults(): void
+    {
+        $this->assertSame('phpversion', Result::Err('e')->unwrapOr('phpversion'));
+        $this->assertSame('phpversion', Result::Err('e')->mapOr('phpversion', fn ($v) => $v));
+        $invokable = new class
+        {
+            public function __invoke(): string
+            {
+                return 'invoked';
+            }
+        };
+        $this->assertSame($invokable, Result::Err('e')->unwrapOr($invokable));
+
+        $fallback = Result::Ok('fallback');
+        $this->assertSame($fallback, Result::Err('e')->or($fallback));
+        $this->assertSame('e', Result::Err('e')->or(fn ($err) => Result::Ok($err))->unwrap());
+    }
+
     public function test_unwrap_or_else(): void
     {
         $this->assertSame(2, Result::Ok(2)->unwrapOrElse(fn ($err) => strlen($err)));
