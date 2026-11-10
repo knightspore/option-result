@@ -8,9 +8,9 @@ use Ciarancoza\OptionResult\Exceptions\UnwrapNoneException;
  * Option<T> represents an optional value.
  * An option may be `some` or `none`, where `some` contains a value and `none` does not.
  *
- * @template T
+ * @template-covariant T
  */
-class Option
+final class Option
 {
     /**
      * @nodoc
@@ -36,7 +36,7 @@ class Option
             return $optb;
         }
 
-        return static::None();
+        return self::None();
     }
 
     /**
@@ -53,7 +53,7 @@ class Option
             return $f($this->unwrap());
         }
 
-        return static::None();
+        return self::None();
     }
 
     /**
@@ -83,10 +83,10 @@ class Option
     public function filter(callable $predicate): self
     {
         if ($this->isSome() && $predicate($this->unwrap())) {
-            return static::Some($this->unwrap());
+            return self::Some($this->unwrap());
         }
 
-        return static::None();
+        return self::None();
     }
 
     /**
@@ -100,10 +100,10 @@ class Option
         if ($this->isSome()) {
             $f($this->unwrap());
 
-            return static::Some($this->unwrap());
+            return self::Some($this->unwrap());
         }
 
-        return static::None();
+        return self::None();
     }
 
     /**
@@ -133,10 +133,10 @@ class Option
     public function map(callable $f): self
     {
         if ($this->isSome()) {
-            return static::Some($f($this->value));
+            return self::Some($f($this->value));
         }
 
-        return static::None();
+        return self::None();
 
     }
 
@@ -165,9 +165,12 @@ class Option
      *
      * @return Option<never>
      */
-    public static function None(): static
+    public static function None(): self
     {
-        return new static(null, false);
+        /** @var Option<never> $none */
+        $none = new self(null, false);
+
+        return $none;
     }
 
     /**
@@ -192,8 +195,10 @@ class Option
      * Returns the option if it contains a value, otherwise returns `optb`.
      * If `optb` is a Closure, it will be invoked to get the alternative option.
      *
-     * @param  Option<T>|\Closure():Option<T>  $optb
-     * @return Option<T>
+     * @template U
+     *
+     * @param  Option<U>|\Closure():Option<U>  $optb
+     * @return Option<T>|Option<U>
      */
     public function or(mixed $optb): self
     {
@@ -201,7 +206,7 @@ class Option
             return $optb instanceof \Closure ? $optb() : $optb;
         }
 
-        return static::Some($this->unwrap());
+        return self::Some($this->unwrap());
     }
 
     /**
@@ -216,33 +221,33 @@ class Option
      *
      * @param  Option<V>  $other
      * @param  callable(T, V): U  $f
-     * @return Option<U|T|V>
+     * @return Option<U>|Option<T>|Option<V>
      */
     public function reduce(self $other, callable $f): self
     {
         return match (true) {
-            $this->isSome() && $other->isSome() => static::Some($f($this->unwrap(), $other->unwrap())),
+            $this->isSome() && $other->isSome() => self::Some($f($this->unwrap(), $other->unwrap())),
             $this->isSome() => $this,
             $other->isSome() => $other,
-            default => static::None(),
+            default => self::None(),
         };
     }
 
     /**
      * Creates a `some` Option
      *
-     * @template T
+     * @template U
      *
-     * @param  T  $value
-     * @return Option<T>
+     * @param  U  $value
+     * @return Option<U>
      */
-    public static function Some(mixed $value = true): static
+    public static function Some(mixed $value = true): self
     {
         if ($value === null) {
-            return static::None();
+            return self::None();
         }
 
-        return new static($value, true);
+        return new self($value, true);
     }
 
     /**

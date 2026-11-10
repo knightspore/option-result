@@ -21,12 +21,14 @@
         "phpunit/phpunit": "^12.4",
         "laravel/pint": "^1.25",
         "phpdocumentor/phpdocumentor": "v3.9.0",
-        "saggre/phpdocumentor-markdown": "^1.0"
+        "saggre/phpdocumentor-markdown": "^1.0",
+        "phpstan/phpstan": "^2.3"
     },
     "scripts": {
         "test": "./vendor/bin/phpunit --testdox",
         "lint": "./vendor/bin/pint",
         "docs": "./vendor/bin/phpdoc run -d $(pwd)/src -t $(pwd)/docs --template='vendor/saggre/phpdocumentor-markdown/themes/markdown'",
-        "release": "composer lint && composer test && composer docs"
+        "release": "composer lint && composer analyse && composer test && composer docs",
+        "analyse": "./vendor/bin/phpstan analyse"
     }
 }

@@ -6,6 +6,8 @@ An option may be `some` or `none`, where `some` contains a value and `none` does
 ***
 
 * Full name: `\Ciarancoza\OptionResult\Option`
+* This class is marked as **final** and can't be subclassed
+* This class is a **Final class**
 
 ## Properties
 
@@ -217,7 +219,7 @@ If `$err` is a Closure, it will be invoked to get the error value.
 Returns the option if it contains a value, otherwise returns `optb`.
 
 ```php
-public or(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>|callable $optb): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>
+public or(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>|callable $optb): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>|\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>
 ```
 
 If `optb` is a Closure, it will be invoked to get the alternative option.
@@ -226,7 +228,7 @@ If `optb` is a Closure, it will be invoked to get the alternative option.
 
 | Parameter | Type                                                                      | Description |
 |-----------|---------------------------------------------------------------------------|-------------|
-| `$optb`   | **\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>\|callable** |             |
+| `$optb`   | **\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>\|callable** |             |
 
 ***
 
@@ -235,7 +237,7 @@ If `optb` is a Closure, it will be invoked to get the alternative option.
 Reduces two options into one, using the provided function if both are `Some`.
 
 ```php
-public reduce(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\V> $other, callable $f): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U|\Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\V>
+public reduce(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\V> $other, callable $f): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>|\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>|\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\V>
 ```
 
 If `$this` is `Some(s)` and `$other` is `Some(o)`, this method returns `Some($f(s,o))`.
@@ -256,7 +258,7 @@ If both `$this` and `$other` are `None`, `None` is returned.
 Creates a `some` Option
 
 ```php
-public static Some(\Ciarancoza\OptionResult\T $value = true): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>
+public static Some(\Ciarancoza\OptionResult\U $value = true): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>
 ```
 
 * This method is **static**.
@@ -264,7 +266,7 @@ public static Some(\Ciarancoza\OptionResult\T $value = true): \Ciarancoza\Option
 
 | Parameter | Type                           | Description |
 |-----------|--------------------------------|-------------|
-| `$value`  | **\Ciarancoza\OptionResult\T** |             |
+| `$value`  | **\Ciarancoza\OptionResult\U** |             |
 
 ***
 

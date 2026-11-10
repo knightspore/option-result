@@ -9,10 +9,10 @@ use Throwable;
 /**
  * Result<T, E> represents a success (`Ok`) or an error (`Err`)
  *
- * @template T
- * @template E
+ * @template-covariant T
+ * @template-covariant E
  */
-class Result
+final class Result
 {
     /**
      * @nodoc
@@ -28,9 +28,10 @@ class Result
      * Returns `$res` if the result is `Ok`, otherwise returns the `Err` value of `$this`
      *
      * @template U
+     * @template F
      *
-     * @param  Result<U,E>  $res
-     * @return Result<U,E>
+     * @param  Result<U,F>  $res
+     * @return Result<U,F>|Result<T,E>
      */
     public function and(self $res): Result
     {
@@ -45,9 +46,10 @@ class Result
      * Calls `$f` if the result is `Ok`, otherwise returns the `Err` value of `$this`
      *
      * @template U
+     * @template F
      *
-     * @param  callable(T): Result<U,E>  $f
-     * @return Result<U,E>
+     * @param  callable(T): Result<U,F>  $f
+     * @return Result<U,F>|Result<T,E>
      */
     public function andThen(callable $f): Result
     {
@@ -66,9 +68,12 @@ class Result
      * @param  F  $value
      * @return Result<never,F>
      */
-    public static function Err(mixed $value): static
+    public static function Err(mixed $value): self
     {
-        return new static($value, false);
+        /** @var Result<never,F> $err */
+        $err = new self($value, false);
+
+        return $err;
     }
 
     /**
@@ -111,7 +116,7 @@ class Result
     public function getErr(): Option
     {
         if ($this->isErr()) {
-            return Option::Some($this->value);
+            return Option::Some($this->unwrapErr());
         }
 
         return Option::None();
@@ -125,7 +130,7 @@ class Result
     public function getOk(): Option
     {
         if ($this->isOk()) {
-            return Option::Some($this->value);
+            return Option::Some($this->unwrap());
         }
 
         return Option::None();
@@ -188,7 +193,7 @@ class Result
     public function map(callable $f): self
     {
         if ($this->isOk()) {
-            return static::Ok($f($this->unwrap()));
+            return self::Ok($f($this->unwrap()));
         }
 
         return $this;
@@ -205,7 +210,7 @@ class Result
     public function mapErr(callable $f): self
     {
         if ($this->isErr()) {
-            return static::Err($f($this->unwrapErr()));
+            return self::Err($f($this->unwrapErr()));
         }
 
         return $this;
@@ -258,19 +263,23 @@ class Result
      * @param  U  $value
      * @return Result<U,never>
      */
-    public static function Ok(mixed $value = true): static
+    public static function Ok(mixed $value = true): self
     {
-        return new static($value, true);
+        /** @var Result<U,never> $ok */
+        $ok = new self($value, true);
+
+        return $ok;
     }
 
     /**
      * Returns `$res` if the result is `Err`, otherwise returns the `Ok` value of `$this`.
      * If `$res` is a Closure, it will be invoked with the `Err` value to get the alternative result.
      *
+     * @template U
      * @template F
      *
-     * @param  Result<T,F>|\Closure(E): Result<T,F>  $res
-     * @return Result<T,F>
+     * @param  Result<U,F>|\Closure(E): Result<U,F>  $res
+     * @return Result<U,F>|Result<T,E>
      */
     public function or(mixed $res): self
     {
@@ -292,12 +301,12 @@ class Result
      * @param  null|callable(Throwable): F  $catch
      * @return Result<U,F|Throwable>
      */
-    public static function tryCatch(callable $try, ?callable $catch = null): static
+    public static function tryCatch(callable $try, ?callable $catch = null): self
     {
         try {
-            return static::Ok($try());
+            return self::Ok($try());
         } catch (Throwable $e) {
-            return static::Err($catch ? $catch($e) : $e);
+            return self::Err($catch ? $catch($e) : $e);
         }
     }
 
@@ -315,7 +324,10 @@ class Result
             throw new UnwrapErrException(value: $this->value);
         }
 
-        return $this->value;
+        /** @var T $value */
+        $value = $this->value;
+
+        return $value;
     }
 
     /**
@@ -331,7 +343,10 @@ class Result
             throw new UnwrapOkException(value: $this->value);
         }
 
-        return $this->value;
+        /** @var E $value */
+        $value = $this->value;
+
+        return $value;
     }
 
     /**

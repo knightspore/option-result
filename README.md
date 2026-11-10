@@ -104,6 +104,7 @@ You can view [the generated documentation](https://github.com/knightspore/option
 ```bash
 composer test     # phpunit
 composer lint     # pint
+composer analyse  # phpstan, level max
 composer docs     # regenerate docs/ with phpDocumentor
 composer release  # all of the above
 ```
