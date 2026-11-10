@@ -47,7 +47,7 @@ private __construct(\Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\E $value
 Returns `$res` if the result is `Ok`, otherwise returns the `Err` value of `$this`
 
 ```php
-public and(\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\F> $res): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\F>|\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\E>
+public and(\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\F> $res): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\E|\Ciarancoza\OptionResult\F>
 ```
 
 **Parameters:**
@@ -63,7 +63,7 @@ public and(\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoz
 Calls `$f` if the result is `Ok`, otherwise returns the `Err` value of `$this`
 
 ```php
-public andThen(callable $f): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\F>|\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\E>
+public andThen(callable $f): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\E|\Ciarancoza\OptionResult\F>
 ```
 
 **Parameters:**
@@ -293,7 +293,7 @@ public static Ok(\Ciarancoza\OptionResult\U $value = true): \Ciarancoza\OptionRe
 Returns `$res` if the result is `Err`, otherwise returns the `Ok` value of `$this`.
 
 ```php
-public or(\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\F>|callable $res): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\F>|\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T,\Ciarancoza\OptionResult\E>
+public or(\Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\F>|callable $res): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\F>
 ```
 
 If `$res` is a Closure, it will be invoked with the `Err` value to get the alternative result.
@@ -312,7 +312,7 @@ Calls `$try` and wraps its return value in `Ok`. If `$try` throws, the `Throwabl
 and the return value is wrapped in `Err`. If no `$catch` is given, the `Throwable` itself becomes the `Err` value.
 
 ```php
-public static tryCatch(callable $try, null|callable $catch = null): \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\F|\Throwable>
+public static tryCatch(callable $try, null|callable $catch = null): ($catch is null ? \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Throwable> : \Ciarancoza\OptionResult\Result<\Ciarancoza\OptionResult\U,\Ciarancoza\OptionResult\F>)
 ```
 
 * This method is **static**.

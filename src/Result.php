@@ -31,7 +31,7 @@ final class Result
      * @template F
      *
      * @param  Result<U,F>  $res
-     * @return Result<U,F>|Result<T,E>
+     * @return Result<U,E|F>
      */
     public function and(self $res): Result
     {
@@ -39,7 +39,7 @@ final class Result
             return $res;
         }
 
-        return $this;
+        return self::Err($this->unwrapErr());
     }
 
     /**
@@ -49,7 +49,7 @@ final class Result
      * @template F
      *
      * @param  callable(T): Result<U,F>  $f
-     * @return Result<U,F>|Result<T,E>
+     * @return Result<U,E|F>
      */
     public function andThen(callable $f): Result
     {
@@ -57,7 +57,7 @@ final class Result
             return $f($this->unwrap());
         }
 
-        return $this;
+        return self::Err($this->unwrapErr());
     }
 
     /**
@@ -279,7 +279,7 @@ final class Result
      * @template F
      *
      * @param  Result<U,F>|\Closure(E): Result<U,F>  $res
-     * @return Result<U,F>|Result<T,E>
+     * @return Result<T|U,F>
      */
     public function or(mixed $res): self
     {
@@ -287,7 +287,7 @@ final class Result
             return $res instanceof \Closure ? $res($this->unwrapErr()) : $res;
         }
 
-        return $this;
+        return self::Ok($this->unwrap());
     }
 
     /**
@@ -299,14 +299,18 @@ final class Result
      *
      * @param  callable(): U  $try
      * @param  null|callable(Throwable): F  $catch
-     * @return Result<U,F|Throwable>
+     * @return ($catch is null ? Result<U,Throwable> : Result<U,F>)
      */
     public static function tryCatch(callable $try, ?callable $catch = null): self
     {
         try {
             return self::Ok($try());
         } catch (Throwable $e) {
-            return self::Err($catch ? $catch($e) : $e);
+            if ($catch === null) {
+                return self::Err($e);
+            }
+
+            return self::Err($catch($e));
         }
     }
 

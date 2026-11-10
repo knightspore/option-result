@@ -127,7 +127,7 @@ final class Option
      *
      * @template U
      *
-     * @param  callable(T): U  $f
+     * @param  callable(T): (U|null)  $f
      * @return Option<U>
      */
     public function map(callable $f): self
@@ -142,7 +142,7 @@ final class Option
 
     /**
      * Returns the provided default (if none), or applies a function to the contained value (if any).
-     * If `or` is callable, it will be invoked to get the default value.
+     * If `$or` is a Closure, it will be invoked to get the default value.
      *
      * @template U
      * @template V
@@ -198,7 +198,7 @@ final class Option
      * @template U
      *
      * @param  Option<U>|\Closure():Option<U>  $optb
-     * @return Option<T>|Option<U>
+     * @return Option<T|U>
      */
     public function or(mixed $optb): self
     {
@@ -238,7 +238,7 @@ final class Option
      *
      * @template U
      *
-     * @param  U  $value
+     * @param  U|null  $value
      * @return Option<U>
      */
     public static function Some(mixed $value = true): self
@@ -268,7 +268,7 @@ final class Option
 
     /**
      * Returns the contained `some` value or a provided default.
-     * If `or` is callable, it will be invoked to get the default value.
+     * If `$or` is a Closure, it will be invoked to get the default value.
      *
      * @template V
      *

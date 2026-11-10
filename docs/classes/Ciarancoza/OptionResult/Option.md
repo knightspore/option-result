@@ -174,7 +174,7 @@ Returns the provided default (if none), or applies a function to the contained v
 public mapOr(\Ciarancoza\OptionResult\V|callable $or, callable $f): \Ciarancoza\OptionResult\U|\Ciarancoza\OptionResult\V
 ```
 
-If `or` is callable, it will be invoked to get the default value.
+If `$or` is a Closure, it will be invoked to get the default value.
 
 **Parameters:**
 
@@ -219,7 +219,7 @@ If `$err` is a Closure, it will be invoked to get the error value.
 Returns the option if it contains a value, otherwise returns `optb`.
 
 ```php
-public or(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>|callable $optb): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T>|\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>
+public or(\Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>|callable $optb): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\U>
 ```
 
 If `optb` is a Closure, it will be invoked to get the alternative option.
@@ -258,15 +258,15 @@ If both `$this` and `$other` are `None`, `None` is returned.
 Creates a `some` Option
 
 ```php
-public static Some(\Ciarancoza\OptionResult\U $value = true): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>
+public static Some(\Ciarancoza\OptionResult\U|null $value = true): \Ciarancoza\OptionResult\Option<\Ciarancoza\OptionResult\U>
 ```
 
 * This method is **static**.
 **Parameters:**
 
-| Parameter | Type                           | Description |
-|-----------|--------------------------------|-------------|
-| `$value`  | **\Ciarancoza\OptionResult\U** |             |
+| Parameter | Type                                 | Description |
+|-----------|--------------------------------------|-------------|
+| `$value`  | **\Ciarancoza\OptionResult\U\|null** |             |
 
 ***
 
@@ -292,7 +292,7 @@ Returns the contained `some` value or a provided default.
 public unwrapOr(\Ciarancoza\OptionResult\V|callable $or): \Ciarancoza\OptionResult\T|\Ciarancoza\OptionResult\V
 ```
 
-If `or` is callable, it will be invoked to get the default value.
+If `$or` is a Closure, it will be invoked to get the default value.
 
 **Parameters:**
 
